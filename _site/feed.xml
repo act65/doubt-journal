@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://act65.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="http://act65.github.io/" rel="alternate" type="text/html" /><updated>2021-08-04T18:34:33+01:00</updated><id>http://act65.github.io/feed.xml</id><title type="html">act65 | Main</title><subtitle>More questions than answers</subtitle><entry><title type="html">Linear Bandits with Stochastic Delayed Feedback</title><link href="http://act65.github.io/delayed-bandits" rel="alternate" type="text/html" title="Linear Bandits with Stochastic Delayed Feedback" /><published>2020-06-20T00:00:00+01:00</published><updated>2020-06-20T00:00:00+01:00</updated><id>http://act65.github.io/delayed-bandits</id><content type="html" xml:base="http://act65.github.io/delayed-bandits">&lt;h1 id=&quot;linear-bandits-with-stochastic-delayed-feedback&quot;&gt;Linear Bandits with Stochastic Delayed Feedback&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-08-04T18:35:50+01:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">act65 | Main</title><subtitle>More questions than answers</subtitle><entry><title type="html">Linear Bandits with Stochastic Delayed Feedback</title><link href="http://localhost:4000/delayed-bandits" rel="alternate" type="text/html" title="Linear Bandits with Stochastic Delayed Feedback" /><published>2020-06-20T00:00:00+01:00</published><updated>2020-06-20T00:00:00+01:00</updated><id>http://localhost:4000/delayed-bandits</id><content type="html" xml:base="http://localhost:4000/delayed-bandits">&lt;h1 id=&quot;linear-bandits-with-stochastic-delayed-feedback&quot;&gt;Linear Bandits with Stochastic Delayed Feedback&lt;/h1&gt;
 
 &lt;h2 id=&quot;review&quot;&gt;Review&lt;/h2&gt;
 
@@ -304,10 +304,24 @@ What did I do to deserve this?
 Without some kind of structure in the problem, learning is impossible!?
 Unless we add a noop action? Can simply wait??
 If we get a reward and have only take a single action then we can assign credit.
-If we have taken n actions and recieve a reward then we can rule out actions that were not taken, and assign credit based on how long ago the actions were taken?!! --&gt;</content><author><name></name></author><category term="main" /><summary type="html">Linear Bandits with Stochastic Delayed Feedback</summary></entry><entry><title type="html">Accepted papers</title><link href="http://act65.github.io/accepted" rel="alternate" type="text/html" title="Accepted papers" /><published>2020-06-10T00:00:00+01:00</published><updated>2020-06-10T00:00:00+01:00</updated><id>http://act65.github.io/accepted</id><content type="html" xml:base="http://act65.github.io/accepted">&lt;div id=&quot;home&quot;&gt;
+If we have taken n actions and recieve a reward then we can rule out actions that were not taken, and assign credit based on how long ago the actions were taken?!! --&gt;</content><author><name></name></author><category term="main" /><summary type="html">Linear Bandits with Stochastic Delayed Feedback</summary></entry><entry><title type="html">Accepted papers</title><link href="http://localhost:4000/accepted" rel="alternate" type="text/html" title="Accepted papers" /><published>2020-06-10T00:00:00+01:00</published><updated>2020-06-10T00:00:00+01:00</updated><id>http://localhost:4000/accepted</id><content type="html" xml:base="http://localhost:4000/accepted">&lt;div id=&quot;home&quot;&gt;
   &lt;h1&gt;Accepted papers&lt;/h1&gt;
   &lt;ul class=&quot;posts&quot;&gt;
     
+      
+        &lt;li&gt;&lt;a href=&quot;http://www.stats.ox.ac.uk/~teh/research/compstats/WelTeh2011a.pdf&quot;&gt;Paper&lt;/a&gt;   &lt;a href=&quot;/performative-prediction&quot;&gt;Review&lt;/a&gt; &amp;raquo; Langevin SGD &lt;/li&gt;
+      
+    
+      
+    
+      
+        &lt;li&gt;&lt;a href=&quot;https://arxiv.org/abs/2002.06673&quot;&gt;Paper&lt;/a&gt;   &lt;a href=&quot;/performative-prediction&quot;&gt;Review&lt;/a&gt; &amp;raquo; Performative prediction &lt;/li&gt;
+      
+    
+      
+    
+      
+        &lt;li&gt;&lt;a href=&quot;https://ti.arc.nasa.gov/m/profile/dhw/papers/78.pdf&quot;&gt;Paper&lt;/a&gt;   &lt;a href=&quot;/no-free-lunch&quot;&gt;Review&lt;/a&gt; &amp;raquo; No free lunch theorems for optimization &lt;/li&gt;
       
     
       
@@ -315,17 +329,31 @@ If we have taken n actions and recieve a reward then we can rule out actions tha
       
     
   &lt;/ul&gt;
-&lt;/div&gt;</content><author><name></name></author><category term="main" /><summary type="html">Accepted papers</summary></entry><entry><title type="html">Reviews</title><link href="http://act65.github.io/reviews" rel="alternate" type="text/html" title="Reviews" /><published>2020-06-10T00:00:00+01:00</published><updated>2020-06-10T00:00:00+01:00</updated><id>http://act65.github.io/reviews</id><content type="html" xml:base="http://act65.github.io/reviews">&lt;div id=&quot;home&quot;&gt;
+&lt;/div&gt;</content><author><name></name></author><category term="main" /><summary type="html">Accepted papers Paper Review &amp;raquo; Langevin SGD Paper Review &amp;raquo; Performative prediction Paper Review &amp;raquo; No free lunch theorems for optimization</summary></entry><entry><title type="html">Reviews</title><link href="http://localhost:4000/reviews" rel="alternate" type="text/html" title="Reviews" /><published>2020-06-10T00:00:00+01:00</published><updated>2020-06-10T00:00:00+01:00</updated><id>http://localhost:4000/reviews</id><content type="html" xml:base="http://localhost:4000/reviews">&lt;div id=&quot;home&quot;&gt;
   &lt;h1&gt;Reviewed papers&lt;/h1&gt;
   &lt;ul class=&quot;posts&quot;&gt;
+    
+      
+        &lt;li&gt;&lt;a href=&quot;http://www.stats.ox.ac.uk/~teh/research/compstats/WelTeh2011a.pdf&quot;&gt;Paper&lt;/a&gt;   &lt;a href=&quot;/performative-prediction&quot;&gt;Review&lt;/a&gt; &amp;raquo; Langevin SGD &lt;/li&gt;
+      
+    
+      
+    
+      
+        &lt;li&gt;&lt;a href=&quot;https://arxiv.org/abs/2002.06673&quot;&gt;Paper&lt;/a&gt;   &lt;a href=&quot;/performative-prediction&quot;&gt;Review&lt;/a&gt; &amp;raquo; Performative prediction &lt;/li&gt;
+      
     
       
         &lt;li&gt;&lt;a href=&quot;https://arxiv.org/abs/1807.02089&quot;&gt;Paper&lt;/a&gt;   &lt;a href=&quot;/delayed-bandits&quot;&gt;Review&lt;/a&gt; &amp;raquo; Linear Bandits with Stochastic Delayed Feedback &lt;/li&gt;
       
     
       
+        &lt;li&gt;&lt;a href=&quot;https://ti.arc.nasa.gov/m/profile/dhw/papers/78.pdf&quot;&gt;Paper&lt;/a&gt;   &lt;a href=&quot;/no-free-lunch&quot;&gt;Review&lt;/a&gt; &amp;raquo; No free lunch theorems for optimization &lt;/li&gt;
+      
+    
+      
     
       
     
   &lt;/ul&gt;
-&lt;/div&gt;</content><author><name></name></author><category term="main" /><summary type="html">Reviewed papers Paper Review &amp;raquo; Linear Bandits with Stochastic Delayed Feedback</summary></entry></feed>
+&lt;/div&gt;</content><author><name></name></author><category term="main" /><summary type="html">Reviewed papers Paper Review &amp;raquo; Langevin SGD Paper Review &amp;raquo; Performative prediction Paper Review &amp;raquo; Linear Bandits with Stochastic Delayed Feedback Paper Review &amp;raquo; No free lunch theorems for optimization</summary></entry></feed>
