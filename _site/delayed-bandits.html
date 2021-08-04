@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+   <title>Linear Bandits with Stochastic Delayed Feedback</title>
+   <meta name="author" content="Editor" />
+   <meta name="readability-verification" content="QCzSs992GxmRYRKVpPeZ6LE2tS8aYKxsSSQKV8YM"/>
+
+   <!-- syntax highlighting CSS -->
+   <link rel="stylesheet" href="/css/syntax.css" type="text/css" />
+
+   <!-- Homepage CSS -->
+   <link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen, projection" />
+
+   <!-- Typekit -->
+   <script type="text/javascript" src="http://use.typekit.com/jpd0pfm.js"></script>
+   <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+</head>
+<body>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\[","\]"], ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    messageStyle: "none",
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+<script type="text/javascript"
+   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js">
+</script>
+
+
+<!-- ClickTale Top part -->
+<script type="text/javascript">
+var WRInitTime=(new Date()).getTime();
+</script>
+<!-- ClickTale end of Top part -->
+
+<div class="site">
+  <div class="title">
+    <a href="/">Home</a>
+    <a class="extra" href="/reviews">Reviews</a>
+    <a class="extra" href="/accepted">Accepted papers</a>
+  </div>
+
+  <div id="post">
+  <h1 id="linear-bandits-with-stochastic-delayed-feedback">Linear Bandits with Stochastic Delayed Feedback</h1>
+
+<h2 id="review">Review</h2>
+
+<p>To me, the interesting part of this paper is the setting. Unfortunately for the authors, that isn’t new.
+I am interested in how to design a learner that exploits some kind of structure within the delayed bandit problem to achieve better performance. This paper provides and characterises a baseline, a learner that does not exploit any structure in the delays.</p>
+
+<div class="center">
+<strong>Rating</strong>: 5 / 10
+</div>
+<hr />
+
+<h2 id="overview">Overview</h2>
+
+<p><i>Rather than recieving feedback when you want it, in this setting you recieve it after an unknown delay. How do these delays effect your ability to efficiently to learn?</i></p>
+
+<p>The authors consider an augmented linear bandit with two key additions;</p>
+
+<ul>
+  <li>delayed feedback,</li>
+  <li>negative feedback is not observed.</li>
+</ul>
+
+<p>The learners goal is to minimse its regret. Which is the difference between the best fixed choice in hindsight and the actions it chose.</p>
+
+\[R(T, \theta) = \sum_{t=1}^{T} \langle \theta, A^{* } \rangle - \langle \theta, A_t\rangle\]
+
+<p>Where $A_t \in \mathcal A\subset \mathbb R^d$ is the action space. And $\theta \in \Theta \subset R^d$ is the parameter space. $X_t\in {0, 1}$ are the rewards, and $Y_t\in {0, 1}$ are the observed rewards.</p>
+
+\[\begin{align}
+X_t &amp;\sim \mathcal B(\langle A_t, \theta \rangle) \tag{bernoulli linear bandit} \\
+D_t &amp;\sim P(D) \tag{sample the delay}\\
+C_{s, t} &amp;= \mathbb 1 [D_s \le t-s] \tag{mask of the delays}\\
+Y_{s, t} &amp;= C_{s, t} X_s \tag{delayed rewards}
+\end{align}\]
+
+<p>As an example, let’s consider what a learner might observe.</p>
+
+\[\begin{bmatrix}
+t=1 \\
+2 \\
+3 \\
+4 \\
+5 \\
+6 \\
+7 \\
+8 \\
+9 \\
+10 \\
+- \\
+s= \\
+\end{bmatrix}
+\begin{bmatrix}
+0 \\
+0 &amp; 0 \\
+0 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; 1 &amp; 1 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 1 \\
+- &amp; - &amp; - &amp; - &amp; - &amp; - &amp; - &amp; - &amp; - &amp; - \\
+1 &amp; 2 &amp; 3 &amp; 4 &amp; 5 &amp; 6 &amp; 7 &amp; 8 &amp; 9 &amp; 10 \\
+\end{bmatrix}\]
+
+<p>The rows correspond to each time step, (indexed by $t$), and the columns correspond to the history (indexed by $s$).</p>
+
+<p>So, for any action that received a reward of zero, $Y_{s, t} = C_{s, t}X_{s} = 0$, we are left wondering; might the reward received convert to $Y_{s, \tau} = C_{s, \tau}X_{s} = 1$ at some future time ($t &lt; \tau$)?</p>
+
+<p>To solve this problem the authors construct;</p>
+
+<ul>
+  <li>a way to estimate each action’s payoffs.</li>
+  <li>a rational way to pick new actions given our predictions of their payoffs.</li>
+</ul>
+
+<p>And provide an analysis of each.</p>
+
+<h3 id="estimation">Estimation</h3>
+
+<h4 id="a-fixed-size-memory">A fixed size memory</h4>
+
+<p>To make estimation computationally feasible the authors give the learner access to the last $m$ actions and their results, $\hat Y_{s, t}$ (it is not allowed to remember).</p>
+
+\[\hat Y_{s, t} = Y_{s, t} \mathbb 1 \{D_s \le m\}\]
+
+<p>So the learner gets a fixed size buffer of past information. This change has introduced some new problems;</p>
+
+<ul>
+  <li>if the buffer’s size is smaller than the expected delay, $m &lt; E[D]$, then the problem is rather unlearnable.</li>
+  <li>we are throwing away $1-P(D &lt; m)$ of the data.</li>
+  <li>because some rewards might not have converted this will bias our estimates of rewards to be pessimistic.</li>
+</ul>
+
+<h4 id="least-squares">Least squares</h4>
+
+<p>The authors decide to estimate the parameters using least squares. By solving the following;</p>
+
+\[\theta_t = \mathop{\text{argmin}}_{\hat \theta} \sum_{s=1}^{t-1}\parallel \hat Y_{t, s} - A_s\cdot \hat \theta \parallel\]
+
+<p>This least squares formulation is rather dumb. It doesn’t know about the delays, and just tries to fit the action-rewards as they are observed, despite the fact that $\hat Y_{k, t}$ might not have converted.
+Despite this, least squares will give small(er) errors when $P(D &lt; m)$ is large. As most rewards will have converted when it comes time to estimate the parameters.</p>
+
+<p>All we are really saying here is; if there are no delays then least squares can fit a linear model. What we really want to know is how well does least squares work with delayed feedback?</p>
+
+<!-- Because this is a linear problem we can solve this analytically, yielding;
+
+$$
+\hat \theta_t^{W} = \Bigg( \sum_{s=1}^{t-1} A_S A_S^T + \lambda I \Bigg)^{-1}
+\Bigg(\sum_{s=1}^{t-1}\hat Y_{s, t}A_s \Bigg)
+$$ -->
+
+<h4 id="confidence">Confidence</h4>
+
+<p>So we want to know if this least squares estimator is accurate in the delayed setting. In Theorem 1., the authors characterise its accuracy using a confidence interval.</p>
+
+<blockquote cite="Vernade 2020">
+<strong>Theorem 1.</strong>
+Let $\tau_m = P(D \le m)$ and $\delta \in (0, 1)$. Then the following holds for all $t \le T$ with probability at least $1 − 2\delta$
+
+$$
+\parallel \hat \theta^W_t − \tau_m \theta \parallel_{V_t(\lambda)} \le 2f_{t,\delta} + \sum_{s=t-m}^{t-1} \parallel A_s \parallel_{V_t(\lambda)^{-1}}
+$$
+
+where
+
+$$
+f_{t,\delta} = \sqrt{2\log(\frac{1}{\delta}) + d \log(\frac{ d\lambda + t}{d\lambda})}
+$$
+</blockquote>
+
+<p>Great. But what does that actually say?</p>
+
+<p><strong>1)</strong> Is this estimator accurate in the applications we planning on using it? <br />
+<strong>2)</strong> How is this a confidence interval? <br />
+<strong>3)</strong> How is the confidence influenced by the problem?</p>
+
+<p><strong>1)</strong> As indicated earlier, when $P(D &lt; m)$ is large, $\tau_m \theta \approx \theta$, which means we are bounding the distance between the true parameters and our estimate. Indicating that least squares should work when $m$ is large relative to the likely delay.</p>
+
+<p><strong>2)</strong> From theorem 1. it can be seen that;</p>
+
+\[\alpha_{t, \delta} =  2 f_{t, \delta} + \sum_{s=t-m}^{t-1} \parallel A_s \parallel_{V_T(\lambda)^{-1}} \\
+\alpha_{t, \delta} \ge \parallel \hat \theta^W_t − \tau_m \theta \parallel_{V_t(\lambda)}\]
+
+<p>In high dimensions confidence intervals can be written as;</p>
+
+\[\begin{align}
+\alpha_\delta &amp;\ge (\theta - \hat \theta)^T C(\theta)^{-1} (\theta - \hat \theta)  \\
+&amp;\ge \parallel \theta - \hat \theta \parallel_{C(\theta)^{-1}}
+\end{align}\]
+
+<side>
+This doesnt really make sense to me. The covariance of the parameters. They are not random variables.
+</side>
+
+<p>Where $C(\theta)$ is the covariance of the estimated parameters. This equation says that: there is a $1-\delta$ probability that the true parameters lie within a distance $\alpha_{\delta}$ of the estimated parameters. Intuitively this makes sense as $C(\theta)$’s role is to downweight directions with higher variance. Allowing $\theta$ to be further away from $\hat \theta$ in those directions.</p>
+
+<p><strong>3)</strong> By a happy coincidence of linearity, the covariance of our parameters can be easily calculated.</p>
+
+\[\begin{align}
+C(\theta) &amp;\approx V_t(\lambda)^{-1} \\
+&amp;= \Bigg( \sum_{s=1}^{t-1} A_sA_s^T + \lambda  I \Bigg)^{-1}
+\end{align}\]
+
+<p>So if we consider the confidence interval $\alpha_{\delta}$ we see the term $\parallel A \parallel_{V_t(\lambda)^{-1}}$. This term is large(r) when $A$ points in a direction that most other past actions do not.</p>
+
+<p>Note that $2f_{t, \delta}$ is the confidence interval from vanilla least squares, and the added term is due to the delay.</p>
+
+<h3 id="control">Control</h3>
+
+<p>Now that we have an estimate and we can quantify our confidence, we can rationally choose actions.
+We want to pick actions that maximise the reward. But we don’t know how to do that yet. Rather, we must fist pick actions that “explore” and allow us to estimate the parameters of the problem.</p>
+
+<p>We set the utility of an action to be the best reward we can confidently expect. Also known as optimisim in the face of uncertainty.</p>
+
+<p>Fortunately, the authors have already characterised the confidence we ought to have in our estimate. We can use this confidence to pick our exploratory actions. Also known as; the upper confidence bound method, or UCB.</p>
+
+\[\begin{align}
+U(a) &amp;=  \mathop{\text{max}}_{\theta} \langle a, \theta \rangle \\ &amp;\text{s.t.} \;\;\parallel\theta-\hat \theta^W_t\parallel_{V_t(\lambda)} \le \alpha_\delta\\
+A_t &amp;= \mathop{\text{argmax}}_a U(a) \\
+\end{align}\]
+
+<p>We can upper bound $U(a)$ with a simpler to calculate function, $\hat U(a)$.</p>
+
+\[\begin{align}
+U(a) &amp;= \langle a, \hat \theta^W_t +  e_a^{* } \rangle \\
+&amp;= \langle a, \hat \theta^W_t \rangle +  \langle a, e_a^{* } \rangle \tag{linear fn}\\
+&amp;\le  \langle a, \hat \theta^W_t \rangle +  \parallel e_a^{* } \parallel_{V_t(\lambda)^{-1}} \parallel a \parallel_{V_t(\lambda)^{-1}} \tag{Cauchy–Schwarz}\\
+\hat U(a) &amp;:= \langle a, \hat \theta^W_t \rangle + \Bigg( f_{t, \delta} + \sum_{s=t-m}^{t-1}\parallel A \parallel_{V_t(\lambda)^{-1}}\Bigg) \parallel a \parallel_{V_t(\lambda)^{-1}} \tag{theorem 1.}\\
+\end{align}\]
+
+<p>Where $e_a^{* }$ is a vector pointing to from the current estimate to the parameters with highest reward (under action $a$) that are within the $\delta$-confidence set.</p>
+
+<h3 id="analysis">Analysis</h3>
+
+<p>Great. Now we have a learner with the authors name OTFLinUCB.</p>
+
+<side>
+Because the actual algorithm is implemented in an incremental fashion, how does this change the estimator? As data older than $m$ can still influence the estimation.
+</side>
+<ul>
+  <li>estimate $\theta_t$ from observations using least squares,</li>
+  <li>calculate our confidence $a_\delta$,</li>
+  <li>pick a new action, $A_t$ using our utility function, $U$.</li>
+</ul>
+
+<p>But how does this algorithm perform?</p>
+
+<blockquote cite="Vernade 2020">
+<strong>Theorem 2.</strong>
+With probability at least $1 − 2\delta$ the regret of OTFLinUCB satisfies
+
+$$
+R(T, θ) \le \frac{4 f_{n, \delta}}{\tau_m} \sqrt{2dT\log\Big(\frac{d\lambda + T}{d \lambda} \Big)}\\+ \frac{4md}{\tau_m}\log \Big( \frac{d\lambda
++ T}{d \lambda}\Big)
+$$
+</blockquote>
+
+<p>This theorem provides the authors with the understanding that;</p>
+
+<side>
+The lower order term makes little sense to me. How can more data, and more converted rewards (by using a larger $m$) hurt performance?
+</side>
+
+<blockquote cite="Vernade 2020">
+The choice of $m$ is left to the learner. It influences the bound in two ways: (1) The lower-order term is linear in $m$, which prevents the user from choosing $m$ very large. On the other hand, $\tau_m$ is increasing in $m$, which pushes the user in the opposite direction. Designing an adaptive algorithm that optimizes the choice of $m$ online remains a challenge for the future
+</blockquote>
+
+<p>They also compare the performance of OTFLinUCB to a lower bound on the delayed bernoulli linear bandit setting.</p>
+
+<blockquote cite="Vernade 2020">
+<strong>Theorem 3.</strong>
+For any policy $\pi$ and $K &gt; 1$ and $T \ge 1$ and
+$\tau \in (0, 1)$ there exists a $K$-armed Bernoulli bandit such that $R(T, \theta) \ge c\text{min}(T, \sqrt{\frac{TK}{\tau_m}})$, where $c&gt;0$ is a
+universal constant.
+</blockquote>
+
+<p>We can see that $\sqrt{T}$ performance is possible, while the OTFLinUCB learner achieves approximately $\sqrt{T\log T}$.</p>
+
+<hr />
+
+<h2 id="additional-thoughts">Additional thoughts</h2>
+
+<h3 id="a-prior-on-delay-distributions">A prior on delay distributions</h3>
+
+<p>In this setting it seems there is a natural prior;
+the distribution over delays, $D$, probably has a long tail that exponentially decays.</p>
+
+\[p(D) \propto e^{-D} \\\]
+
+<p>This prior suggests an alternative approach.
+The more time that passes after we have chosen an action, the less likely it is we that we are going to see a reward.</p>
+
+<side>there is probably a more principled way, via Bayes, to derive this, or something like it.</side>
+
+\[\hat Y_{s, t} = e^{-\beta (t-s) (1-Y_{s, t})} \\\]
+
+<p>This starts by assuming each action is likely to give a reward of $1$, but the longer that $1$ is not observed, the more we decay it’s value.</p>
+
+<p>Rather than needing to act optimistically with respect to an estimated model. This approach builds optimisim into the model.</p>
+
+<h3 id="setting-extensions">Setting extensions</h3>
+
+<h4 id="allow-delays-to-be-action-dependent">Allow delays to be action dependent</h4>
+
+<p>In the delayed linear bandit problem, delays are sampled from the distribution $D_t \sim p(\mathcal D)$. This could be easily extended to $D_t \sim p( \mathcal D \mid A_t)$.</p>
+
+<p>This setting is interesting as the learner must;</p>
+
+<ul>
+  <li>model the delays.</li>
+  <li>tradeoff near-term performance gains via feedback from actions with small delay vs potential performance gains from feedback about actions with longer delays.</li>
+</ul>
+
+<p>Intuitively, a good heuristic might be: pick actions with long delays first. And while they take their time to convert, pick the actions with shorter delays.
+Otherwise, if we pick actions with short delays first then we are left with nothing to do while we wait for actions with long delays to convert.</p>
+
+<h4 id="delayed-and-accumulating-rewards">Delayed and accumulating rewards</h4>
+
+<p>Rather than the Bernoulli rewards in ${0, 1}$ for a past action which gets revealed  after some delay.
+How about an accumulating reward?</p>
+
+<p>After taking an action, at time $s$, we observe the future rewards ${y_t(a_s)}$s. We care about maximising the accumulation of all those rewards incurred by the action $A_s$, ie $r(A_s) = \sum_{0}^{\infty} y_t(A_s)$.</p>
+
+<p>In this setting we would require;</p>
+
+<ul>
+  <li>actions do not effect the outcomes of other actions,</li>
+  <li>the accumulated rewards are bounded $\sum_{0}^{\infty} y_t(A_s) &lt; \infty$.</li>
+</ul>
+
+<!-- #### Delayed and aggregated rewards
+
+Rather than $y_s^t$, we recieve $\hat y^t = \sum_s y_s^t$
+
+Now we have a credit assignment problem. Leaving the player wondering;
+
+<blockquote cite='Mr. Nobody'>
+What did I do to deserve this?
+</blockquote>
+
+Without some kind of structure in the problem, learning is impossible!?
+Unless we add a noop action? Can simply wait??
+If we get a reward and have only take a single action then we can assign credit.
+If we have taken n actions and recieve a reward then we can rule out actions that were not taken, and assign credit based on how long ago the actions were taken?!! -->
+
+</div>
+
+
+</div>
+
+<!-- ClickTale Bottom part -->
+<div id="ClickTaleDiv" style="display: none;"></div>
+<script type="text/javascript">
+if(document.location.protocol!='https:')
+  document.write(unescape("%3Cscript%20src='http://s.clicktale.net/WRb.js'%20type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+if(typeof ClickTale=='function') ClickTale(206,0.3,"www03");
+</script>
+<!-- ClickTale end of Bottom part -->
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-6016902-1");
+pageTracker._trackPageview();
+</script>
+<!-- Google Analytics end -->
+
+</body>
+</html>
