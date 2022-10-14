@@ -2,7 +2,7 @@
 layout: post
 title: Linear Bandits with Stochastic Delayed Feedback
 permalink: delayed-bandits
-rating: 5
+rating: 4
 ref: https://arxiv.org/abs/1807.02089
 ---
 # Linear Bandits with Stochastic Delayed Feedback
