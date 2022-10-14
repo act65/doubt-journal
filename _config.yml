@@ -6,7 +6,7 @@ avatar: https://raw.githubusercontent.com/act65/act65.github.io/master/images/qu
 # Includes an icon in the footer for each username you enter
 footer-links:
   dribbble:
-  email: act65.com@gmail.com
+  email: te1farac@gmail.com
   facebook:
   flickr:
   github: act65
@@ -80,3 +80,5 @@ defaults:
       path: "" # an empty string here means all files in the project
     values:
       category: "main"
+
+# paginate: 5

@@ -1,16 +1,32 @@
 ---
 layout: post
-title: Performative prediction
-permalink: performative-prediction
+title: Magnetic control of tokamak plasmas through deep reinforcement learning
+permalink: tokomak-plasma-rl
 rating: 8
-ref: https://arxiv.org/abs/2002.06673
+ref: https://www.nature.com/articles/s41586-021-04301-9.pdf
 ---
 
-# Performative prediction
+# Magnetic control of tokamak plasmas through deep reinforcement learning
 
 ## Review
 
 
+<hr>
+## Overview
+
+- Fusion
+- Plasma dunamics
+- ?
+
+<hr>
+## Additional thoughts
+
+
+# Performative prediction
+
+helloworld
+
+## Review
 
 <div class="center">
 <strong>Rating</strong>: {{ page.rating }} / 10
