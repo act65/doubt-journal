@@ -3,25 +3,6 @@ description: More questions than answers
 avatar: https://raw.githubusercontent.com/act65/act65.github.io/master/images/question-mark.png
 
 
-# Includes an icon in the footer for each username you enter
-footer-links:
-  dribbble:
-  email: te1farac@gmail.com
-  facebook:
-  flickr:
-  github: act65
-  instagram:
-  linkedin:
-  pinterest:
-  rss: feed # just type anything here for a working RSS icon
-  twitter: telfarac
-  stackoverflow: # your stackoverflow profile, e.g. "users/50476/bart-kiers"
-  youtube: # channel/<your_long_string> or user/<user-name>
-  googleplus: # anything in your profile username that comes after plus.google.com/
-
-
-disqus: act65com
-
 # Enter your Google Analytics web tracking code (e.g. UA-2110908-2) to activate tracking
 google_analytics:
 
@@ -59,7 +40,9 @@ sass:
 plugins:
  - jekyll-sitemap # Create a sitemap using the official Jekyll sitemap gem
  - jekyll-feed # Create an Atom feed using the official Jekyll feed gem
+ - jekyll-scholar
  # - jekyll-gist
+
 
 # Exclude these files from your production _site
 exclude:

@@ -6,6 +6,17 @@
 
 /* Global Reset */
 
+figcaption {
+  font-size: 0.8em;
+  color: #666;
+  text-align: center;
+  margin-top: 0.1em;
+}
+
+.code {
+  background-color: rgb(252, 146, 146);
+}
+
 * {
   margin: 0;
   padding: 0;

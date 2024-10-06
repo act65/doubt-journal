@@ -1,13 +1,13 @@
-source 'https://rubygems.org'
-gem 'github-pages', group: :jekyll_plugins
-
 # frozen_string_literal: true
 
-# source "https://rubygems.org"
+source "https://rubygems.org"
 
-# gem "rails"
-# gem "jekyll"
-# gem "jekyll-sitemap"
-# gem "jekyll-feed"
-gem "webrick", "~> 1.7"
-# gem "kramdown-parser-gfm"
+gem "jekyll", "~> 4.2"
+gem "jekyll-sitemap"
+gem "jekyll-feed"
+# gem "jekyll-scholar"
+
+# gem "github-pages", group: :jekyll_plugins
+gem "jekyll-include-cache", group: :jekyll_plugins
+gem "jekyll-scholar", group: :jekyll_plugins
+gem "webrick", "~> 1.7", group: :jekyll_plugins
