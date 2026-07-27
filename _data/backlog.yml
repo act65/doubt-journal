@@ -1,8 +1,8 @@
-# The queue. Generated from the old papers/READING_LIST.md — edit this file directly
-# from now on, or use `python scripts/new_paper.py <slug> --from-backlog`.
+# The reading queue. INTERNAL — no page on the site renders this; it is here for the scorer
+# and for `python scripts/new_paper.py <slug> --from-backlog`. Edit it directly.
 #
-# An entry is 'cleared' when a paper in _papers/ has a matching `ref:` URL. That is
-# what drives the coverage bars on /backlog/ — nothing here is hand-maintained.
+# An entry is 'cleared' when a paper in _papers/ has a matching `ref:` URL. Coverage is
+# reported by `python scripts/score.py` in the terminal only.
 #
 #   starred: true  == the entries marked with a star in the original list
 

@@ -29,9 +29,9 @@ permalink: /stats/
   <!-- ------------------------------------------------------------------ verdicts -->
   <h2>Verdicts</h2>
   <ul class="tallies">
-    <li><a href="{{ '/accepted' | relative_url }}"><strong>{{ s.accepted }}</strong> accepted</a></li>
-    <li><a href="{{ '/rejected' | relative_url }}"><strong>{{ s.rejected }}</strong> rejected</a></li>
-    <li><strong>{{ s.under_review }}</strong> under review</li>
+    <li><a href="{{ '/papers/?verdict=accepted' | relative_url }}"><strong>{{ s.accepted }}</strong> accepted</a></li>
+    <li><a href="{{ '/papers/?verdict=rejected' | relative_url }}"><strong>{{ s.rejected }}</strong> rejected</a></li>
+    <li><a href="{{ '/papers/?verdict=under-review' | relative_url }}"><strong>{{ s.under_review }}</strong> under review</a></li>
   </ul>
 
   {% if s.ratings.size > 0 %}

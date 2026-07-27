@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import json
 import re
 import string
 import subprocess
@@ -86,10 +87,15 @@ def main() -> int:
     if not title:
         raise SystemExit("need a --title (or --from-backlog)")
 
+    # Titles routinely contain ':' — unquoted, YAML reads that as a mapping and the front
+    # matter fails to parse.
+    def quoted(value):
+        return json.dumps(str(value), ensure_ascii=False) if value not in (None, "") else ""
+
     filled = string.Template(TEMPLATE.read_text(encoding="utf-8")).substitute(
         slug=args.slug,
-        title=title,
-        authors=authors,
+        title=quoted(title),
+        authors=quoted(authors),
         year=year,
         venue=args.venue,
         ref=ref,

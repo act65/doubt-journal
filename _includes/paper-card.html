@@ -1,13 +1,22 @@
 {% comment %}
-  One row in a list of papers. Carries its searchable text in data- attributes so the browse
-  page can filter without a server or a build step.
+  One row in a list of papers. Carries its searchable text and its facets in data- attributes so
+  the browse page can filter without a server or a build step.
   Expects: include.paper.
 {% endcomment %}
 {% assign p = include.paper %}
 {% assign depth = site.data.gamify.depth[p.depth] %}
+{% assign threshold = site.data.gamify.accept_threshold %}
+{% if p.rating == nil %}
+  {% assign verdict = "under-review" %}
+{% elsif p.rating >= threshold %}
+  {% assign verdict = "accepted" %}
+{% else %}
+  {% assign verdict = "rejected" %}
+{% endif %}
 <li class="paper-card"
     data-tags="{{ p.tags | join: ' ' }}"
     data-depth="{{ p.depth }}"
+    data-verdict="{{ verdict }}"
     data-text="{{ p.title | append: ' ' | append: p.authors | append: ' ' | append: p.year | append: ' ' | append: p.question | downcase | strip_newlines | escape }}">
   <div class="paper-card-head">
     <a class="paper-card-title" href="{{ p.url | relative_url }}">{{ p.title }}</a>

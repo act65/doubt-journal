@@ -374,6 +374,11 @@ side {
 .verdict-rejected { background: #f7e8e8; color: #a00; }
 .verdict-pending  { background: #f0f0f0; color: #777; }
 
+/* the same chips, used as filter buttons on /papers/ */
+button.verdict { border: none; cursor: pointer; font-family: inherit; }
+button.verdict .count { opacity: 0.6; }
+.verdict.active { outline: 2px solid #a00; }
+
 .rating { font-size: 0.85em; color: #666; }
 
 .depth {

@@ -60,7 +60,9 @@ def load_papers() -> list[dict]:
     papers = []
     for index in sorted(PAPERS.glob("*/index.md")):
         fm, body = read_front_matter(index)
-        if fm.get("draft"):
+        # Drafts are scaffolding: excluded from the scoreboard, and `published: false` keeps
+        # Jekyll from rendering them too. Neither counts until you say it does.
+        if fm.get("draft") or fm.get("published") is False:
             continue
         fm["slug"] = index.parent.name
         fm["read_date"] = as_date(fm.get("read"))
@@ -356,6 +358,10 @@ def lint(papers) -> list[str]:
             warnings.append(f"{p['slug']}: missing {missing}")
         if PLACEHOLDER in p["body"]:
             warnings.append(f"{p['slug']}: the Review section is still a placeholder")
+        # Drafts are skipped entirely, so this only fires once a mined draft is published —
+        # which is exactly when quoting a private conversation starts to matter.
+        if "MINED EVIDENCE" in p["body"]:
+            warnings.append(f"{p['slug']}: mined evidence block still present — scrub it")
         if p.get("rating") is None:
             warnings.append(f"{p['slug']}: no rating yet — still under review")
         if p.get("depth") == "rebuilt" and not p.get("notebooks"):

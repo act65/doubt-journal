@@ -69,6 +69,27 @@ hand-write the rating either — the layout renders it from `rating:`. Break `##
 are the entire point of the journal being theirs. A placeholder saying it isn't written yet is
 correct; invented prose is not.
 
+## Mining old conversations
+
+`scripts/mine_conversations.py` scans `~/.claude/projects/**/*.jsonl` for paper identifiers and
+ranks them by how the paper actually came up. The scoring rule that matters: a mention is
+*diluted by how many other papers share the same message*, so a paper named alone counts far
+more than one item in a thirty-paper reading list. `solo` mentions drive the depth guess, and
+`extended` is never inferred.
+
+Output goes to `.mined/report.yml`, which is **gitignored — it quotes private conversations and
+this repo is public**. `--draft <key>` scaffolds `_papers/<slug>/index.md` with `draft: true`
+and `published: false`, so it is invisible to both Jekyll and the scoreboard until promoted.
+
+Drafts carry a `MINED EVIDENCE` comment block of raw material. `score.py` warns if that block
+survives into a published review. Scrub it before flipping `draft: false`.
+
+## The backlog is internal
+
+`_data/backlog.yml` is the reading queue and is **not published** — no page renders it, and no
+tag page lists queued entries. It exists for `new_paper.py --from-backlog` and for the coverage
+line `score.py` prints in the terminal. Don't add a page that exposes it.
+
 ## Tags, not folders
 
 Grouping is tags only; `_papers/` is deliberately flat. `_data/tags.yml` gives each tag a label

@@ -46,6 +46,5 @@ In questions of science, the authority of a thousand is not worth the humble rea
   {% for p in recent limit: 5 %}{% include paper-card.html paper=p %}{% endfor %}
 </ul>
 <p class="note">
-  <a href="{{ '/papers/' | relative_url }}">All {{ s.papers }} papers</a> ·
-  <a href="{{ '/backlog/' | relative_url }}">{{ s.backlog.open }} still queued</a>
+  <a href="{{ '/papers/' | relative_url }}">All {{ s.papers }} papers</a>
 </p>

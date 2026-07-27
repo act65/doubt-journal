@@ -18,6 +18,9 @@ uncertainty:
 generative-models:
   label: Generative models
   kind: topic
+flow-matching:
+  label: Flow matching
+  kind: topic
 rl:
   label: Reinforcement learning
   kind: topic
