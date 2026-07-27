@@ -4,7 +4,32 @@ _site/*
 .jekyll-metadata
 .bundle
 .sass-cache
-Gemfile.lock
 node_modules
 package.json
 vendor
+
+# Gemfile.lock is deliberately tracked — CI restores the bundle from it.
+
+# Paper PDFs stay local; the review links to the paper instead.
+*.pdf
+
+# Python / notebook environment
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# marimo
+__marimo__/
+.marimo.toml
+
+# Notebook scratch output
+*.npy
+*.npz
+figures/
+
+# Editors
+.ipynb_checkpoints/
+.vscode/
+.idea/

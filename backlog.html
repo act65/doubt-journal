@@ -1,0 +1,47 @@
+---
+layout: default
+title: Backlog
+permalink: /backlog/
+---
+
+{% assign s = site.data.stats %}
+
+<div id="backlog">
+
+  <h1>Backlog</h1>
+  <p class="note">
+    The queue, from <code>_data/backlog.yml</code>. An entry clears itself when a review in
+    <code>_papers/</code> points at the same link — nothing here is ticked off by hand.
+    ★ marks a tight fit to what I'm actually working on.
+  </p>
+
+  <div class="rank-block">
+    <div class="rank-xp">{{ s.backlog.cleared }} of {{ s.backlog.total }} cleared</div>
+    <div class="bar big"><span style="width: {{ s.backlog.pct }}%"></span></div>
+    <div class="note">{{ s.backlog.open }} still open, {{ s.backlog.starred_open }} of them starred</div>
+  </div>
+
+  {% for group in s.backlog.by_tag %}
+    {% assign entries = site.data.backlog | where: "tag", group.slug %}
+    <h2>
+      {% if group.count > 0 %}
+        <a href="{{ '/papers/tag/' | append: group.slug | append: '/' | relative_url }}">{{ group.label }}</a>
+      {% else %}
+        {{ group.label }}
+      {% endif %}
+      <span class="note">{{ group.cleared }}/{{ group.total }}</span>
+    </h2>
+    <div class="bar"><span style="width: {{ group.pct }}%"></span></div>
+    <ul class="backlog">
+      {% for entry in entries %}
+        <li>
+          {% if entry.starred %}<span class="starred" title="Tight fit to current work">★</span>{% endif %}
+          {% if entry.url %}<a href="{{ entry.url }}">{{ entry.title }}</a>{% else %}{{ entry.title }}{% endif %}
+          {% if entry.authors %}<span class="note">— {{ entry.authors }}{% if entry.year %}, {{ entry.year }}{% endif %}</span>
+          {% elsif entry.year %}<span class="note">— {{ entry.year }}</span>{% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+
+</div>

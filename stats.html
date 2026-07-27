@@ -1,0 +1,135 @@
+---
+layout: default
+title: Scoreboard
+permalink: /stats/
+---
+
+{% assign s = site.data.stats %}
+
+<div id="stats">
+
+  <h1>Scoreboard</h1>
+  <p class="note">
+    Everything here is computed by <code>scripts/score.py</code> from the papers themselves.
+    The only way to move a number is to read something.
+  </p>
+
+  <!-- ------------------------------------------------------------------ rank -->
+  <div class="rank-block">
+    <div class="rank-name">{{ s.rank.name }}</div>
+    <div class="rank-xp">{{ s.xp }} XP over {{ s.papers }} paper{% if s.papers != 1 %}s{% endif %}</div>
+    {% if s.next_rank %}
+      <div class="bar"><span style="width: {{ s.next_rank.pct }}%"></span></div>
+      <div class="note">{{ s.next_rank.remaining }} XP to {{ s.next_rank.name }}</div>
+    {% else %}
+      <div class="note">Top rank. There is nothing left to be promoted to.</div>
+    {% endif %}
+  </div>
+
+  <!-- ------------------------------------------------------------------ verdicts -->
+  <h2>Verdicts</h2>
+  <ul class="tallies">
+    <li><a href="{{ '/accepted' | relative_url }}"><strong>{{ s.accepted }}</strong> accepted</a></li>
+    <li><a href="{{ '/rejected' | relative_url }}"><strong>{{ s.rejected }}</strong> rejected</a></li>
+    <li><strong>{{ s.under_review }}</strong> under review</li>
+  </ul>
+
+  {% if s.ratings.size > 0 %}
+    <div class="histogram">
+      {% assign top = s.ratings | sort: "count" | last %}
+      {% for r in s.ratings %}
+        <div class="hbar">
+          <span class="hbar-label">{{ r.rating }}/10</span>
+          <span class="hbar-fill" style="width: {{ r.count | times: 100 | divided_by: top.count }}%"></span>
+          <span class="hbar-count">{{ r.count }}</span>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- ------------------------------------------------------------------ pace -->
+  <h2>{{ s.year.value }}</h2>
+  <div class="bar big"><span style="width: {% if s.year.pct > 100 %}100{% else %}{{ s.year.pct }}{% endif %}%"></span></div>
+  <p class="note">
+    {{ s.year.read }} of {{ s.year.target }} ({{ s.year.pct }}%).
+    Pace says {{ s.year.expected_by_now }} by now —
+    {% if s.year.ahead_by >= 0 %}
+      <span class="good">{{ s.year.ahead_by }} ahead</span>.
+    {% else %}
+      <span class="bad">{{ s.year.ahead_by | times: -1 }} behind</span>.
+    {% endif %}
+  </p>
+
+  <!-- ------------------------------------------------------------------ streak -->
+  <h2>Streak</h2>
+  <p class="note">
+    <strong>{{ s.streak.current }}</strong> week{% if s.streak.current != 1 %}s{% endif %} running
+    · best <strong>{{ s.streak.best }}</strong>. A week counts if you finished at least one paper.
+  </p>
+  <div class="sparkline">
+    {% for w in s.streak.weeks %}
+      <span class="spark {% if w.count > 0 %}on{% endif %}" title="{{ w.week }}: {{ w.count }}">
+        {% if w.count > 1 %}{{ w.count }}{% endif %}
+      </span>
+    {% endfor %}
+  </div>
+  <p class="note">last 26 weeks</p>
+
+  <!-- ------------------------------------------------------------------ depth -->
+  <h2>How carefully</h2>
+  <table class="depth-table">
+    <tr><th>Depth</th><th>Papers</th><th>XP each</th><th>XP</th><th></th></tr>
+    {% for d in s.by_depth %}
+      <tr>
+        <td><span class="depth depth-{{ d.slug }}">{{ d.label }}</span></td>
+        <td>{{ d.count }}</td>
+        <td>{{ d.xp_each }}</td>
+        <td>{{ d.xp }}</td>
+        <td class="note">{{ site.data.gamify.depth[d.slug].blurb }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+
+  <!-- ------------------------------------------------------------------ badges -->
+  <h2>Badges</h2>
+  <ul class="badges">
+    {% assign earned = s.badges | where: "earned", true %}
+    {% assign pending = s.badges | where: "earned", false %}
+    {% for b in earned %}
+      <li class="badge earned">
+        <span class="badge-name">{{ b.name }}</span>
+        <span class="badge-blurb">{{ b.blurb }}</span>
+      </li>
+    {% endfor %}
+    {% for b in pending %}
+      <li class="badge locked">
+        <span class="badge-name">{{ b.name }}</span>
+        <span class="badge-blurb">{{ b.blurb }}</span>
+        <span class="badge-progress">{{ b.detail }}</span>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <!-- ------------------------------------------------------------------ tags -->
+  <h2>Tags</h2>
+  <ul class="tag-cloud">
+    {% for t in s.by_tag %}
+      <li><a class="tag tag-{{ t.kind }}" href="{{ '/papers/tag/' | append: t.slug | append: '/' | relative_url }}">{{ t.label }} <span class="count">{{ t.count }}</span></a></li>
+    {% endfor %}
+  </ul>
+
+  {% if s.by_year.size > 0 %}
+    <h2>Publication years</h2>
+    <div class="histogram">
+      {% assign peak = s.by_year | sort: "count" | last %}
+      {% for y in s.by_year %}
+        <div class="hbar">
+          <span class="hbar-label">{{ y.year }}</span>
+          <span class="hbar-fill" style="width: {{ y.count | times: 100 | divided_by: peak.count }}%"></span>
+          <span class="hbar-count">{{ y.count }}</span>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+</div>

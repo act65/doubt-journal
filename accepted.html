@@ -1,0 +1,21 @@
+---
+layout: default
+title: Accepted papers
+permalink: /accepted/
+---
+
+{% assign threshold = site.data.gamify.accept_threshold %}
+{% assign accepted = site.papers | where_exp: "p", "p.rating >= threshold" | sort: "rating" | reverse %}
+
+<div id="papers">
+  <h1>Accepted papers</h1>
+  <p class="note">Rated {{ threshold }}/10 or above. {{ site.data.stats.accepted }} so far.</p>
+
+  <ul class="posts papers">
+    {% for p in accepted %}{% include paper-card.html paper=p %}{% endfor %}
+  </ul>
+
+  {% if accepted.size == 0 %}
+    <p class="note">Nothing has cleared the bar yet.</p>
+  {% endif %}
+</div>

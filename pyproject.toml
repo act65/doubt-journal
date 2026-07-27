@@ -1,0 +1,17 @@
+[project]
+name = "doubt-journal"
+version = "0.1.0"
+description = "Papers I've read, the reviews I wrote, and the code I wrote to understand them."
+requires-python = ">=3.12"
+dependencies = [
+    "jax>=0.4.35",
+    "marimo>=0.23.9",
+    "matplotlib>=3.9",
+    "numpy>=2.0",
+    "optax>=0.2.3",
+    "pyyaml>=6.0",
+]
+
+# Not an installable package — just an environment for the notebooks.
+[tool.uv]
+package = false

@@ -1,0 +1,21 @@
+---
+layout: default
+title: Rejected papers
+permalink: /rejected/
+---
+
+{% assign threshold = site.data.gamify.accept_threshold %}
+{% assign rejected = site.papers | where_exp: "p", "p.rating != nil and p.rating < threshold" | sort: "rating" %}
+
+<div id="papers">
+  <h1>Rejected papers</h1>
+  <p class="note">Rated below {{ threshold }}/10. {{ site.data.stats.rejected }} so far.</p>
+
+  <ul class="posts papers">
+    {% for p in rejected %}{% include paper-card.html paper=p %}{% endfor %}
+  </ul>
+
+  {% if rejected.size == 0 %}
+    <p class="note">Nothing rejected yet. Suspicious.</p>
+  {% endif %}
+</div>

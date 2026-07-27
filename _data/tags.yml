@@ -1,0 +1,89 @@
+# Tags are the only grouping mechanism — there are no folders to nest papers into, so a paper
+# can carry as many of these as it earns. The browse page builds one filter row per `kind`.
+#
+#   topic     — what the paper is about
+#   archetype — what kind of contribution it makes (the taxonomy from the backlog)
+#   meta      — anything else worth filtering on
+#
+# A tag used in a paper but missing here still works; it just renders with a prettified slug and
+# lands in the "other" row. Add it here when you want it labelled and grouped properly.
+
+# ---------------------------------------------------------------- topics
+probabilistic-methods:
+  label: Probabilistic methods
+  kind: topic
+uncertainty:
+  label: Uncertainty
+  kind: topic
+generative-models:
+  label: Generative models
+  kind: topic
+rl:
+  label: Reinforcement learning
+  kind: topic
+bandits:
+  label: Bandits
+  kind: topic
+numerical-methods:
+  label: Numerical methods
+  kind: topic
+memory:
+  label: Memory & sequence models
+  kind: topic
+deep-learning:
+  label: Deep learning
+  kind: topic
+fundamental-ml:
+  label: Fundamental ML
+  kind: topic
+fundamental-stats:
+  label: Fundamental stats
+  kind: topic
+information-theory:
+  label: Information theory
+  kind: topic
+optimisation:
+  label: Optimisation
+  kind: topic
+discrete-data:
+  label: Discrete data
+  kind: topic
+interpretability:
+  label: Interpretability
+  kind: topic
+neuroscience:
+  label: Neuroscience
+  kind: topic
+economics:
+  label: Economics & mechanism design
+  kind: topic
+
+# ---------------------------------------------------------------- archetypes
+# "Recommend by contribution archetype, not topic" — these are the four that actually
+# predict whether a paper is worth the time.
+hidden-equivalence:
+  label: Hidden equivalence
+  kind: archetype
+  blurb: "X is secretly Y."
+shouldnt-happen:
+  label: Shouldn't happen
+  kind: archetype
+  blurb: A result that contradicts what the field assumed.
+clarity-essay:
+  label: Clarity essay
+  kind: archetype
+  blurb: Foundational, re-readable, mostly prose.
+reconception:
+  label: Reconception
+  kind: archetype
+  blurb: Reframes a known object as something else entirely.
+
+# ---------------------------------------------------------------- meta
+classic:
+  label: Classic
+  kind: meta
+  blurb: Published before 2000.
+disputed:
+  label: Disputed
+  kind: meta
+  blurb: I think the headline claim is wrong.

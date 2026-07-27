@@ -1,0 +1,74 @@
+---
+layout: default
+---
+
+{% assign depth = site.data.gamify.depth[page.depth] %}
+
+<div id="paper">
+
+  <h1>{{ page.title }}</h1>
+
+  <div class="paper-meta">
+    {{ page.authors }}{% if page.year %} · {{ page.year }}{% endif %}{% if page.venue %} · {{ page.venue }}{% endif %}
+    {% if page.ref %} · <a href="{{ page.ref }}">the paper</a>{% endif %}
+  </div>
+
+  <div class="paper-badges">
+    {% include verdict.html paper=page %}
+    {% if depth %}
+      <span class="depth depth-{{ page.depth }}" title="{{ depth.blurb }}">{{ depth.label }}</span>
+      <span class="xp">+{{ depth.xp }} XP</span>
+    {% endif %}
+    {% if page.read %}<span class="read-on">read {{ page.read | date: "%b %Y" }}</span>{% endif %}
+  </div>
+
+  {% if page.tags and page.tags != empty %}
+    <div class="paper-tags">{% include tag-list.html tags=page.tags %}</div>
+  {% endif %}
+
+  {% if page.question %}
+    <p class="paper-question"><strong>The question I was chasing.</strong> {{ page.question }}</p>
+  {% endif %}
+
+  {% if page.tldr %}
+    <blockquote class="paper-tldr">{{ page.tldr | markdownify | remove: '<p>' | remove: '</p>' }}</blockquote>
+  {% endif %}
+
+  {{ content }}
+
+  {% if page.notebooks and page.notebooks != empty %}
+    <h2>Notebooks</h2>
+    <p class="note">
+      marimo notebooks that rebuild the idea from scratch. Run one with
+      <code>uv run marimo edit _papers/{{ page.slug }}/&lt;notebook&gt;.py</code>.
+    </p>
+    <ul class="notebooks">
+      {% for nb in page.notebooks %}
+        <li>
+          <a href="{{ site.repo }}/blob/{{ site.branch }}/_papers/{{ page.slug }}/{{ nb.file }}"><code>{{ nb.file }}</code></a>
+          — {{ nb.what | markdownify | remove: '<p>' | remove: '</p>' }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if page.related and page.related != empty %}
+    <h2>Related</h2>
+    <ul class="related">
+      {% for slug in page.related %}
+        {% assign other = site.papers | where: "slug", slug | first %}
+        {% if other %}
+          <li><a href="{{ other.url | relative_url }}">{{ other.title }}</a>{% if other.question %} — {{ other.question }}{% endif %}</li>
+        {% else %}
+          <li>{{ slug }} <span class="note">(not reviewed yet)</span></li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <p class="paper-footer">
+    <a href="{{ '/papers/' | relative_url }}">&laquo; all papers</a>
+    · <a href="{{ site.repo }}/blob/{{ site.branch }}/_papers/{{ page.slug }}/index.md">edit this review</a>
+  </p>
+
+</div>

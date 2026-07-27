@@ -1,23 +1,31 @@
 ---
-layout: post
+layout: paper
+slug: delayed-bandits
 title: Linear Bandits with Stochastic Delayed Feedback
-permalink: delayed-bandits
-rating: 4
+authors: Vernade et al.
+year: 2020
+venue: ICML
 ref: https://arxiv.org/abs/1807.02089
+permalink: /papers/delayed-bandits/
+read: 2020-06-20
+depth: read
+rating: 4
+tags: [rl, bandits, uncertainty]
+question: How do delays in feedback affect your ability to learn efficiently?
+tldr: >
+  A linear bandit where feedback arrives after an unknown delay and a zero is indistinguishable
+  from "not converted yet". The paper provides and characterises a baseline: a learner that does
+  not exploit any structure in the delays.
+notebooks: []
+related: []
 ---
-# Linear Bandits with Stochastic Delayed Feedback
 
 ## Review
 
 To me, the interesting part of this paper is the setting. Unfortunately for the authors, that isn't new.
 I am interested in how to design a learner that exploits some kind of structure within the delayed bandit problem to achieve better performance. This paper provides and characterises a baseline, a learner that does not exploit any structure in the delays.
 
-<div class="center">
-<strong>Rating</strong>: {{ page.rating }} / 10
-</div>
-<hr>
-
-## Overview
+## Problem
 
 <i>Rather than recieving feedback when you want it, in this setting you recieve it after an unknown delay. How do these delays effect your ability to efficiently to learn?</i>
 
@@ -86,6 +94,8 @@ To solve this problem the authors construct;
 - a rational way to pick new actions given our predictions of their payoffs.
 
 And provide an analysis of each.
+
+## Overview
 
 ### Estimation
 
@@ -258,7 +268,6 @@ universal constant.
 
 We can see that $\sqrt{T}$ performance is possible, while the OTFLinUCB learner achieves approximately $\sqrt{T\log T}$.
 
-<hr>
 ## Additional thoughts
 
 ### A prior on delay distributions

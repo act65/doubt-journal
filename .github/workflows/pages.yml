@@ -1,0 +1,61 @@
+name: Build and deploy
+
+# The default GitHub Pages build ignores _plugins/ and won't install jekyll-scholar, so the
+# site is built here and the finished _site/ is what gets deployed.
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check the scoreboard is current
+        # _data/stats.yml is committed so the numbers show up in the diff. This fails the
+        # build if someone edited a paper without rerunning the scorer.
+        run: |
+          pip install pyyaml
+          python scripts/score.py --check
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+          bundler-cache: true
+
+      - uses: actions/configure-pages@v5
+        id: pages
+
+      - name: Build
+        env:
+          JEKYLL_ENV: production
+        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment

@@ -2,19 +2,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
 <head>
    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-   <title>{{ page.title }}</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1" />
+   <title>{% if page.title %}{{ page.title }} · {% endif %}Doubt journal</title>
    <meta name="author" content="Editor" />
-   <meta name="readability-verification" content="QCzSs992GxmRYRKVpPeZ6LE2tS8aYKxsSSQKV8YM"/>
 
    <!-- syntax highlighting CSS -->
-   <link rel="stylesheet" href="/css/syntax.css" type="text/css" />
+   <link rel="stylesheet" href="{{ '/css/syntax.css' | relative_url }}" type="text/css" />
 
    <!-- Homepage CSS -->
-   <link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen, projection" />
-
-   <!-- Typekit -->
-   <script type="text/javascript" src="http://use.typekit.com/jpd0pfm.js"></script>
-   <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+   <link rel="stylesheet" href="{{ '/css/screen.css' | relative_url }}" type="text/css" media="screen, projection" />
 </head>
 <body>
 
@@ -36,45 +32,19 @@
    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js">
 </script>
 
-
-<!-- ClickTale Top part -->
-<script type="text/javascript">
-var WRInitTime=(new Date()).getTime();
-</script>
-<!-- ClickTale end of Top part -->
-
 <div class="site">
   <div class="title">
-    <a href="/">Home</a>
-    <a class="extra" href="/accepted">Accepted papers</a>
-    <a class="extra" href="/rejected">Rejected papers</a>
+    <a href="{{ '/' | relative_url }}">Home</a>
+    <a class="extra" href="{{ '/papers/' | relative_url }}">Papers</a>
+    <a class="extra" href="{{ '/stats/' | relative_url }}">Scoreboard</a>
+    <a class="extra" href="{{ '/backlog/' | relative_url }}">Backlog</a>
+    <a class="extra" href="{{ '/accepted/' | relative_url }}">Accepted</a>
+    <a class="extra" href="{{ '/rejected/' | relative_url }}">Rejected</a>
   </div>
 
   {{ content }}
 
 </div>
-
-<!-- ClickTale Bottom part -->
-<div id="ClickTaleDiv" style="display: none;"></div>
-<script type="text/javascript">
-if(document.location.protocol!='https:')
-  document.write(unescape("%3Cscript%20src='http://s.clicktale.net/WRb.js'%20type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-if(typeof ClickTale=='function') ClickTale(206,0.3,"www03");
-</script>
-<!-- ClickTale end of Bottom part -->
-
-<!-- Google Analytics -->
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-var pageTracker = _gat._getTracker("UA-6016902-1");
-pageTracker._trackPageview();
-</script>
-<!-- Google Analytics end -->
 
 </body>
 </html>

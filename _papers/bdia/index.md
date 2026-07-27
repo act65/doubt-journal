@@ -1,23 +1,30 @@
 ---
-layout: post
+layout: paper
+slug: bdia
 title: Bi-directional Integration Approximation (BDIA)
-permalink: /bdia/
-rating: 2
+authors: Zhang et al.
+year: 2023
+venue: arXiv
 ref: https://arxiv.org/abs/2307.10829
+permalink: /papers/bdia/
+read: 2024-01-01
+depth: rebuilt
+rating: 2
+tags: [generative-models, numerical-methods, disputed]
+question: Can a bi-directional coupled integrator make diffusion inversion exact without doubling the NFEs?
+tldr: >
+  Coupling variables lets you construct reversible integration updates. BDIA extends that idea to
+  a bi-directional coupled integrator. The idea may have potential, but this paper does not
+  demonstrate it.
 scholar:
   bibliography: "bdia.bib"
+notebooks: []
+related: []
 ---
-
-# Bi-directional Integration Approximation (BDIA)
 
 ## Review
 
 Numerical solution of integrals introduce errors. Coupling variables allows us to construct reversible integration updates. BDIA is a method that extends this idea to construct a bi-directional coupled integrator. The idea may have potential, but this paper does not demonstrate it.
-
-<div class="center">
-<strong>Rating</strong>: {{ page.rating }} / 10
-</div>
-<hr>
 
 ## Problem
 
@@ -50,7 +57,9 @@ x_{i-1} = x_{i+1} - \Delta(t_i \to t_{i+1} \mid x_i) + \Delta(t_i \to t_{t-1} \m
 x_{i+1} = x_{i-1} + \Delta(t_i \to t_{i+1} \mid x_i) - \Delta(t_i \to t_{t-1} \mid x_{i+1}) \\
 $$ -->
 
-## Coupling to construct invertible fns
+## Overview
+
+### Coupling to construct invertible fns
 
 How can we construct a fn that is easily invertible?
 
@@ -202,7 +211,7 @@ f \\
 $$ -->
 
 
-## EDICT
+### EDICT
 
 EDICT uses this coupling idea to allow us to find the inverse of a non-linear function. {% cite wallace2022edictexactdiffusioninversion %}
 
@@ -292,7 +301,7 @@ I implemented EDICT to test it's invertibility.
 - Why do we need the mixing?
 - Is there a bound on how far $y_t$ and $z_t$ may diverge (assuming they are started from the same point)? -->
 
-## BDIA
+### BDIA
 
 _(from what I can gather, as I find the paper confusing)_
 

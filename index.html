@@ -25,3 +25,27 @@ Extraordinary claims require extraordinary evidence.
 <blockquote cite="Galileo Galilei">
 In questions of science, the authority of a thousand is not worth the humble reasoning of a single individual.
 </blockquote>
+
+{% assign s = site.data.stats %}
+
+<div class="rank-block home-rank">
+  <div class="rank-name">{{ s.rank.name }}</div>
+  <div class="rank-xp">
+    {{ s.papers }} paper{% if s.papers != 1 %}s{% endif %} reviewed · {{ s.xp }} XP ·
+    {{ s.streak.current }} week streak
+  </div>
+  {% if s.next_rank %}
+    <div class="bar"><span style="width: {{ s.next_rank.pct }}%"></span></div>
+    <div class="note">{{ s.next_rank.remaining }} XP to {{ s.next_rank.name }} · <a href="{{ '/stats/' | relative_url }}">scoreboard</a></div>
+  {% endif %}
+</div>
+
+<h2>Latest reviews</h2>
+<ul class="posts papers">
+  {% assign recent = site.papers | sort: "read" | reverse %}
+  {% for p in recent limit: 5 %}{% include paper-card.html paper=p %}{% endfor %}
+</ul>
+<p class="note">
+  <a href="{{ '/papers/' | relative_url }}">All {{ s.papers }} papers</a> ·
+  <a href="{{ '/backlog/' | relative_url }}">{{ s.backlog.open }} still queued</a>
+</p>

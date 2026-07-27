@@ -1,0 +1,34 @@
+---
+layout: default
+---
+
+{% assign meta = site.data.tags[page.tag] %}
+{% assign tagged = site.papers | where_exp: "p", "p.tags contains page.tag" | sort: "read" | reverse %}
+{% assign queued = site.data.backlog | where: "tag", page.tag %}
+
+<div id="tag">
+  <h1>{{ page.title }}</h1>
+  {% if meta.blurb %}<p class="tag-blurb">{{ meta.blurb }}</p>{% endif %}
+  <p class="note">
+    {{ tagged | size }} reviewed{% if queued.size > 0 %} · {{ queued | size }} on the backlog{% endif %}
+  </p>
+
+  <ul class="posts papers">
+    {% for p in tagged %}{% include paper-card.html paper=p %}{% endfor %}
+  </ul>
+
+  {% if queued.size > 0 %}
+    <h2>Still queued</h2>
+    <ul class="backlog">
+      {% for entry in queued %}
+        <li>
+          {% if entry.url %}<a href="{{ entry.url }}">{{ entry.title }}</a>{% else %}{{ entry.title }}{% endif %}
+          {% if entry.authors %}<span class="note">— {{ entry.authors }}{% if entry.year %}, {{ entry.year }}{% endif %}</span>{% endif %}
+          {% if entry.starred %}<span class="starred" title="Tight fit to what I'm working on">★</span>{% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <p class="paper-footer"><a href="{{ '/papers/' | relative_url }}">&laquo; all papers</a></p>
+</div>

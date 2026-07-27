@@ -314,3 +314,238 @@ side {
   font-style: italic;
   color: $gray;
 }
+
+/*****************************************************************************/
+/*
+/* Papers, tags and the scoreboard
+/*
+/*****************************************************************************/
+
+#papers, #stats, #backlog, #tag, #paper {
+  text-align: left;
+}
+
+.note {
+  color: #888;
+  font-size: 0.9em;
+}
+
+.good { color: #070; }
+.bad  { color: #a00; }
+
+/* ---------------------------------------------------------------- tags */
+
+.tag {
+  display: inline-block;
+  padding: 1px 7px;
+  margin: 2px 3px 2px 0;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 0.8em;
+  color: #555;
+  background: #fafafa;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.tag:hover { border-color: #a00; color: #a00; }
+.tag.active { background: #a00; border-color: #a00; color: white; }
+.tag .count { color: #aaa; font-size: 0.85em; }
+.tag.active .count { color: #fdd; }
+
+.tag-archetype { border-style: dashed; border-color: #c99; }
+.tag-meta { background: #f4f8f4; }
+
+.tag-cloud { list-style: none; padding: 0; }
+.tag-cloud li { display: inline; }
+
+/* ---------------------------------------------------------------- verdicts and depth */
+
+.verdict {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 3px;
+  font-size: 0.75em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.verdict-accepted { background: #e8f4e8; color: #070; }
+.verdict-rejected { background: #f7e8e8; color: #a00; }
+.verdict-pending  { background: #f0f0f0; color: #777; }
+
+.rating { font-size: 0.85em; color: #666; }
+
+.depth {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 0.78em;
+  background: #f0f0f0;
+  color: #555;
+  border: none;
+  cursor: pointer;
+}
+
+.depth-skim     { background: #f4f4f4; color: #999; }
+.depth-read     { background: #eef1f6; color: #557; }
+.depth-rebuilt  { background: #e9f0e9; color: #363; }
+.depth-extended { background: #f6efe4; color: #850; }
+.depth.active   { outline: 2px solid #a00; }
+
+.xp { font-size: 0.8em; color: #a00; font-weight: bold; }
+
+/* ---------------------------------------------------------------- paper cards */
+
+ul.papers { list-style: none; padding: 0; }
+
+.paper-card {
+  padding: 0.6em 0;
+  border-bottom: 1px solid #eee;
+}
+
+.paper-card[hidden] { display: none; }
+
+.paper-card-title {
+  font-size: 1.05em;
+  font-weight: bold;
+  margin-right: 0.4em;
+}
+
+.paper-card-meta { color: #888; font-size: 0.85em; margin: 0.15em 0; }
+.paper-card-question { color: #555; font-style: italic; font-size: 0.9em; margin: 0.2em 0; }
+
+/* ---------------------------------------------------------------- filters */
+
+.filters { margin: 1em 0 1.5em; }
+
+#paper-search {
+  width: 100%;
+  padding: 0.4em 0.6em;
+  border: 1px solid #ddd;
+  font-family: inherit;
+  font-size: 1em;
+  margin-bottom: 0.6em;
+}
+
+.filter-row { margin: 0.3em 0; }
+
+.filter-label {
+  display: inline-block;
+  width: 5.5em;
+  font-size: 0.75em;
+  text-transform: uppercase;
+  color: #aaa;
+  letter-spacing: 0.05em;
+}
+
+button.clear {
+  background: none;
+  border: none;
+  color: #a00;
+  font-size: 0.8em;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* ---------------------------------------------------------------- the paper page */
+
+.paper-meta { color: #666; margin-bottom: 0.4em; }
+.paper-badges { margin-bottom: 0.5em; }
+.paper-badges > * { margin-right: 0.4em; }
+.paper-tags { margin-bottom: 0.8em; }
+.paper-question { color: #555; }
+
+blockquote.paper-tldr {
+  border-left: 3px solid #a00;
+  padding-left: 1em;
+  margin: 1em 0;
+  font-style: italic;
+  color: #444;
+}
+
+ul.notebooks li, ul.related li, ul.backlog li { margin: 0.35em 0; }
+ul.backlog { list-style: none; padding: 0; }
+.starred { color: #c90; }
+
+.paper-footer { margin-top: 2em; font-size: 0.9em; color: #999; }
+
+/* ---------------------------------------------------------------- scoreboard */
+
+.rank-block {
+  border: 1px solid #eee;
+  border-left: 3px solid #a00;
+  padding: 0.8em 1em;
+  margin: 1em 0;
+}
+
+.home-rank { text-align: left; }
+.rank-name { font-size: 1.3em; color: #a00; font-weight: bold; }
+.rank-xp { color: #666; margin-bottom: 0.4em; }
+
+.bar {
+  background: #f0f0f0;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0.4em 0;
+}
+
+.bar.big { height: 14px; border-radius: 7px; }
+.bar span { display: block; height: 100%; background: #a00; }
+
+.tallies { list-style: none; padding: 0; }
+.tallies li { display: inline-block; margin-right: 1.5em; }
+.tallies strong { font-size: 1.4em; color: #a00; }
+
+/* ---------------------------------------------------------------- sparkline */
+
+.sparkline { line-height: 1; margin: 0.5em 0; }
+
+.spark {
+  display: inline-block;
+  width: 14px;
+  height: 18px;
+  margin-right: 2px;
+  background: #f0f0f0;
+  border-radius: 2px;
+  font-size: 0.7em;
+  text-align: center;
+  color: white;
+  line-height: 18px;
+}
+
+.spark.on { background: #a00; }
+
+/* ---------------------------------------------------------------- histograms */
+
+.histogram { margin: 0.8em 0; }
+.hbar { display: flex; align-items: center; margin: 2px 0; font-size: 0.85em; }
+.hbar-label { width: 4em; color: #888; }
+.hbar-fill { height: 12px; background: #a00; opacity: 0.75; border-radius: 2px; min-width: 1px; }
+.hbar-count { margin-left: 0.5em; color: #888; }
+
+.depth-table { border-collapse: collapse; width: 100%; font-size: 0.9em; }
+.depth-table th { text-align: left; color: #aaa; font-weight: normal; font-size: 0.85em; }
+.depth-table td, .depth-table th { padding: 0.3em 0.6em 0.3em 0; border-bottom: 1px solid #f4f4f4; }
+
+/* ---------------------------------------------------------------- badges */
+
+.badges { list-style: none; padding: 0; }
+
+.badge {
+  display: inline-block;
+  width: 14em;
+  vertical-align: top;
+  padding: 0.5em 0.7em;
+  margin: 0 0.5em 0.5em 0;
+  border: 1px solid #eee;
+  border-radius: 4px;
+}
+
+.badge.earned { border-color: #a00; background: #fffafa; }
+.badge.locked { opacity: 0.55; }
+.badge-name { display: block; font-weight: bold; color: #a00; }
+.badge.locked .badge-name { color: #777; }
+.badge-blurb { display: block; font-size: 0.82em; color: #777; }
+.badge-progress { display: block; font-size: 0.78em; color: #aaa; margin-top: 0.2em; }

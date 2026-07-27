@@ -1,0 +1,126 @@
+---
+layout: default
+title: Papers
+permalink: /papers/
+---
+
+{% assign stats = site.data.stats %}
+{% assign papers = site.papers | sort: "read" | reverse %}
+
+<div id="papers">
+
+  <h1>Papers</h1>
+  <p class="note">
+    {{ stats.papers }} reviewed · {{ stats.xp }} XP · {{ stats.rank.name }}
+    · <a href="{{ '/stats/' | relative_url }}">scoreboard</a>
+    · <a href="{{ '/backlog/' | relative_url }}">backlog ({{ stats.backlog.open }} open)</a>
+  </p>
+
+  <div class="filters">
+    <input type="search" id="paper-search" placeholder="search title, author, year&hellip;" autocomplete="off">
+
+    {% assign kinds = "topic,archetype,meta,other" | split: "," %}
+    {% for kind in kinds %}
+      {% assign in_kind = stats.by_tag | where: "kind", kind %}
+      {% if in_kind.size > 0 %}
+        <div class="filter-row">
+          <span class="filter-label">{{ kind }}</span>
+          {% for tag in in_kind %}
+            <button class="tag tag-{{ kind }}" data-tag="{{ tag.slug }}">{{ tag.label }} <span class="count">{{ tag.count }}</span></button>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endfor %}
+
+    <div class="filter-row">
+      <span class="filter-label">depth</span>
+      {% for d in stats.by_depth %}
+        {% if d.count > 0 %}
+          <button class="depth depth-{{ d.slug }}" data-depth="{{ d.slug }}">{{ d.label }} <span class="count">{{ d.count }}</span></button>
+        {% endif %}
+      {% endfor %}
+      <button class="clear" id="clear-filters">clear</button>
+    </div>
+
+    <p class="note" id="filter-count"></p>
+  </div>
+
+  <ul class="posts papers" id="paper-list">
+    {% for p in papers %}{% include paper-card.html paper=p %}{% endfor %}
+  </ul>
+
+  {% if papers.size == 0 %}
+    <p class="note">Nothing here yet. <code>python scripts/new_paper.py &lt;slug&gt;</code>.</p>
+  {% endif %}
+
+</div>
+
+<script>
+// Filtering is client-side on purpose: the whole list is a couple of hundred rows at most,
+// and keeping it static means no search index to rebuild and nothing to keep in sync.
+(function () {
+  var list = document.getElementById('paper-list');
+  if (!list) return;
+  var cards = Array.prototype.slice.call(list.querySelectorAll('.paper-card'));
+  var search = document.getElementById('paper-search');
+  var counter = document.getElementById('filter-count');
+  var tagButtons = document.querySelectorAll('[data-tag]');
+  var depthButtons = document.querySelectorAll('[data-depth]');
+  var activeTags = [];
+  var activeDepths = [];
+
+  function apply() {
+    var query = (search.value || '').trim().toLowerCase();
+    var shown = 0;
+    cards.forEach(function (card) {
+      var tags = (card.dataset.tags || '').split(' ');
+      // Tags narrow (AND) so you can ask for "RL AND hidden equivalence";
+      // depths widen (OR) because they are mutually exclusive per paper.
+      var okTags = activeTags.every(function (t) { return tags.indexOf(t) !== -1; });
+      var okDepth = !activeDepths.length || activeDepths.indexOf(card.dataset.depth) !== -1;
+      var okText = !query || (card.dataset.text || '').indexOf(query) !== -1;
+      var visible = okTags && okDepth && okText;
+      card.hidden = !visible;
+      if (visible) shown++;
+    });
+    var filtering = activeTags.length || activeDepths.length || query;
+    counter.textContent = filtering ? shown + ' of ' + cards.length + ' shown' : '';
+    var params = [];
+    if (activeTags.length) params.push('tags=' + activeTags.join(','));
+    if (activeDepths.length) params.push('depth=' + activeDepths.join(','));
+    if (query) params.push('q=' + encodeURIComponent(query));
+    history.replaceState(null, '', params.length ? '?' + params.join('&') : location.pathname);
+  }
+
+  function toggle(store, button, key) {
+    var value = button.dataset[key];
+    var at = store.indexOf(value);
+    if (at === -1) { store.push(value); button.classList.add('active'); }
+    else { store.splice(at, 1); button.classList.remove('active'); }
+    apply();
+  }
+
+  tagButtons.forEach(function (b) { b.addEventListener('click', function () { toggle(activeTags, b, 'tag'); }); });
+  depthButtons.forEach(function (b) { b.addEventListener('click', function () { toggle(activeDepths, b, 'depth'); }); });
+  search.addEventListener('input', apply);
+
+  document.getElementById('clear-filters').addEventListener('click', function () {
+    activeTags = []; activeDepths = []; search.value = '';
+    document.querySelectorAll('.filters .active').forEach(function (b) { b.classList.remove('active'); });
+    apply();
+  });
+
+  // Deep links: /papers/?tags=rl,hidden-equivalence&q=bandit
+  var params = new URLSearchParams(location.search);
+  function preset(param, store, key) {
+    (params.get(param) || '').split(',').filter(Boolean).forEach(function (value) {
+      var button = document.querySelector('[data-' + key + '="' + value + '"]');
+      if (button) { store.push(value); button.classList.add('active'); }
+    });
+  }
+  preset('tags', activeTags, 'tag');
+  preset('depth', activeDepths, 'depth');
+  if (params.get('q')) search.value = params.get('q');
+  apply();
+})();
+</script>

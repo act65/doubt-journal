@@ -1,0 +1,12 @@
+{% comment %}
+  Renders a paper's tags as links to their tag pages, labelled from _data/tags.yml.
+  Expects: include.tags (a list of tag slugs).
+{% endcomment %}
+<span class="tags">
+  {% for slug in include.tags %}
+    {% assign meta = site.data.tags[slug] %}
+    <a class="tag tag-{% if meta %}{{ meta.kind }}{% else %}other{% endif %}"
+       href="{{ '/papers/tag/' | append: slug | append: '/' | relative_url }}"
+       {% if meta.blurb %}title="{{ meta.blurb | escape }}"{% endif %}>{% if meta %}{{ meta.label }}{% else %}{{ slug }}{% endif %}</a>
+  {% endfor %}
+</span>

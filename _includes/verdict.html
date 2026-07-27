@@ -1,0 +1,15 @@
+{% comment %}
+  The journal's verdict on a paper: accepted, rejected, or still under review.
+  A paper with no rating has not been judged yet — that is deliberately distinct from a zero.
+  Expects: include.paper.
+{% endcomment %}
+{% assign threshold = site.data.gamify.accept_threshold %}
+{% if include.paper.rating == nil %}
+  <span class="verdict verdict-pending">Under review</span>
+{% elsif include.paper.rating >= threshold %}
+  <span class="verdict verdict-accepted">Accepted</span>
+  <span class="rating">{{ include.paper.rating }}/10</span>
+{% else %}
+  <span class="verdict verdict-rejected">Rejected</span>
+  <span class="rating">{{ include.paper.rating }}/10</span>
+{% endif %}
