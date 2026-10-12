@@ -1,35 +1,34 @@
 # Scoring rules. Everything on /stats/ is derived from this file plus the papers themselves —
 # nothing is hand-maintained, so the only way to move a number is to actually read something.
 
-# How much a paper is worth, by how hard you actually looked at it. The gap between `skim` and
-# `rebuilt` is the whole point: skimming twenty papers should not outscore rebuilding two.
+# How much a paper is worth, by how hard you actually looked at it. One read is the unit: the
+# gap between `read` and `rebuilt` is the whole point, since reading twenty papers should not
+# outscore rebuilding two. There is no credit for skimming — if you only read the abstract and
+# the figures, it doesn't go in the journal.
 depth:
-  skim:
-    xp: 1
-    label: Skimmed
-    blurb: Read the abstract and figures. Know what it claims, not whether it's true.
   read:
-    xp: 3
+    xp: 1
     label: Read
     blurb: Read it properly, start to finish. Could summarise the argument.
   rebuilt:
-    xp: 8
+    xp: 3
     label: Rebuilt
     blurb: Reimplemented the core idea from scratch. There is a notebook.
   extended:
-    xp: 15
+    xp: 5
     label: Extended
     blurb: Went past the paper — a new experiment, a case it gets wrong, a generalisation.
 
-# Reviewer ranks, in ascending order of unearned authority.
+# Reviewer ranks, in ascending order of unearned authority. Denominated in XP, so with read = 1
+# these read as "papers-equivalent": Reviewer 2 is ten decent reads, or three rebuilds.
 ranks:
-  - { at: 0,    name: Desk Clerk }
-  - { at: 25,   name: Reviewer 2 }
-  - { at: 75,   name: Reviewer }
-  - { at: 150,  name: Area Chair }
-  - { at: 300,  name: Senior Area Chair }
-  - { at: 600,  name: Program Chair }
-  - { at: 1000, name: Editor-in-Chief }
+  - { at: 0,   name: Desk Clerk }
+  - { at: 10,  name: Reviewer 2 }
+  - { at: 25,  name: Reviewer }
+  - { at: 50,  name: Area Chair }
+  - { at: 100, name: Senior Area Chair }
+  - { at: 200, name: Program Chair }
+  - { at: 350, name: Editor-in-Chief }
 
 # Papers per calendar year. The burn-down on /stats/ measures against this.
 annual_target: 52

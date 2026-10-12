@@ -10,7 +10,7 @@ permalink: /papers/quantification-credal-uncertainty/
 # Approximate: first time it came up in your Claude transcripts.
 read: 2026-07-21
 # You said Claude read this one, not you. Set the depth or delete the folder.
-depth: skim
+depth: read
 rating:
 tags: [uncertainty, probabilistic-methods]
 tldr: >

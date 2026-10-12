@@ -1,27 +1,38 @@
 ---
-title: Thinking like Transformers
-subtitle: A restricted access sequence program
-rating: 9
+layout: paper
+slug: rasp
+title: "Thinking Like Transformers"
+authors: "Weiss, Goldberg & Yahav"
+year: 2021
+venue: ICML
 ref: https://arxiv.org/abs/2106.06981
+permalink: /papers/rasp/
+# Migrated from _drafts/2024-10-10-rasp.md (originally a slide deck — the `#` slide titles are
+# now `###` under Overview). `read` is that draft's filename date, a placeholder — check it.
+read: 2024-10-10
+depth: read
+rating: 9
+tags: [interpretability, memory, reconception]
+question:
+tldr:
+notebooks: []
+related: []
+# The [@key] citations below need a bibliography before this is published:
+#   scholar:
+#     bibliography: "rasp.bib"
+draft: true
+published: false
 ---
-
-# Thinking like Transformers
 
 ## Review
 
-
-
-<div class="center">
-<strong>Rating</strong>: {{ page.rating }} / 10
-</div>
-<hr>
+*I haven't written this yet.*
 
 ## Problem
 
+## Overview
 
-
-
-# Attention is all you need
+### Attention is all you need
 
 \begin{align*}
 \text{Attention}(x, W_Q, W_K, W_V) &= \text{Softmax}((W_Qx)^T W_Kx) (W_Vx) \\
@@ -43,7 +54,7 @@ def transfomer(x, depth):
 In practice transformers work very well! Attention really is all you need...
 <!-- [@vaswani2023attention] -->
 
-# Existing work
+### Existing work
 
 > Goal: Understand transformers. How do they work? Why?
 
@@ -54,8 +65,7 @@ Theory on transformers;
 
 Great. But we want a more mechanistic understanding of what they can do and how they do it, much like we have for RNNs (DFA extraction [@weiss_dfa]) and CNNs (feature and circuit extraction [@olah2020zoom]).
 
-# RASP (restricted access sequence program)
-
+### RASP (restricted access sequence program)
 
 <!-- can arbitrary combinations of select and aggregate be mapped onto transformers? -->
 
@@ -67,7 +77,7 @@ Great. But we want a more mechanistic understanding of what they can do and how 
     - element-wise operators (correspond to the MLP layers)
     - select, aggregate (correspond to the MHA layers)
 
-# Element wise operations
+### Element wise operations
 
 - math operations
     - addition
@@ -81,13 +91,13 @@ Great. But we want a more mechanistic understanding of what they can do and how 
 
 Since MLPs are known to be universal function approximators, we can assume that we can represent any element wise operation as an MLP.
 Thus we know that these RASP operations can be represented by the MLP layers of the transformer.
- 
-# Select, aggregate
+
+### Select, aggregate
 
 Select
 
 $$
-\text{select}([0,1,2], [1,2,3], <) = 
+\text{select}([0,1,2], [1,2,3], <) =
 \begin{bmatrix}
 T & F & F \\
 T & T & F \\
@@ -106,7 +116,7 @@ T & T & T \\
 [10, 15, 20]
 $$
 
-<!-- # Selector width
+<!-- ### Selector width
 
 $$
 \text{selector width}(\begin{bmatrix}
@@ -122,7 +132,7 @@ we can embed / represent logical operations into matrices / matmul.
 aside: representation theory of groups!
  -->
 
-# Examples
+### Examples
 
 ```python
 def reverse(tokens):
@@ -140,39 +150,27 @@ def sort(tokens):
     return sort
 ```
 
-# Attention maps
+### Attention maps
 
-![](assets/weiss-attn-patterns-hist2.png)
+![](/assets/images/rasp/weiss-attn-patterns-hist2.png)
 
-# Results
+### Results
 
-![](assets/weiss-results.png)
+![](/assets/images/rasp/weiss-results.png)
 
-<!-- # Insights
+<!-- ### Insights
 
 - the BOS acts as an extra memory cell
 - they write a RASP program to sort a list of numbers (the algorithm is known to require $O(n log n)$ time). the transformer uses $n^2$.  -->
 
-# Limitations
-
-They assume
-
-- we can ignore layer norm.
-- 'hard' attention.
-- not restricted to alternating layers of MLP and MHA.
-- allow the composition of attention maps.
-- allow arbitrary control flow applied to the RASP ops (```if, for, while```).
-
-(NOTE they are not explicit about most of these assumptions. cause for caution!)
-
-# Tracr
+### Tracr
 
 > We show how to “compile” human-readable programs [written in RASP] into standard decoder-
 only transformer models. [@lindner2023tracr]
 
 NOTE that the definition of a transformer has changed slightly here: all the layers are residual layers which read / write from the 'residual stream'.
 
-# Example
+### Example
 
 ```python
 length = make_length() # `length` is not a primitive in our implementation.
@@ -193,7 +191,7 @@ out = model.apply([bos, 1, 2, 3, 1, 3])
 out.decoded -> ['BOS', 3, 1, 3, 2, 1]
 ```
 
-# Removed support for selector combination
+### Removed support for selector combination
 
 The RASP language permits combining arbitrary selectors elementwise using boolean operators.
 
@@ -207,7 +205,7 @@ S_1 \;\text{and}\; S_2 &= m(S_1) + m(S_2) \\
 S_1 \;\text{or}\; S_2 &= m(S_1) ? m(S_2)
 \end{align*}
 
-# Closing thoughts
+## Additional thoughts
 
 <!-- Tracr is a compiler from code to linear algebra!? -->
 
@@ -222,6 +220,14 @@ Other interesting work on transformers
 - [@zhou2023algorithms] RASP-Generalization Conjecture: Transformers tend to length generalize on a task if the task can be solved by a short RASP program which works for all input lengths
 - [transformer superposition](https://transformer-circuits.pub/2022/toy_model/index.html)
 
-# References
+## Feedback
 
-\footnotesize
+They assume
+
+- we can ignore layer norm.
+- 'hard' attention.
+- not restricted to alternating layers of MLP and MHA.
+- allow the composition of attention maps.
+- allow arbitrary control flow applied to the RASP ops (```if, for, while```).
+
+(NOTE they are not explicit about most of these assumptions. cause for caution!)

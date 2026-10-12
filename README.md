@@ -95,10 +95,12 @@ verdict, or claiming `depth: rebuilt` with no notebook to show for it.
 
 | depth | XP | means |
 |---|---|---|
-| `skim` | 1 | read the abstract and figures |
-| `read` | 3 | read it properly, could summarise the argument |
-| `rebuilt` | 8 | reimplemented the core idea; there is a notebook |
-| `extended` | 15 | went past the paper — a new experiment, a case it gets wrong |
+| `read` | 1 | read it properly, could summarise the argument |
+| `rebuilt` | 3 | reimplemented the core idea; there is a notebook |
+| `extended` | 5 | went past the paper — a new experiment, a case it gets wrong |
+
+One read is the unit. There is no credit for skimming — if you only got as far as the abstract
+and the figures, it doesn't go in the journal.
 
 `rating` is out of 10 and drives the verdict: at or above 5 the paper is **accepted**, below it
 is **rejected**, and no rating at all means **under review**. Blank is not zero — a paper you

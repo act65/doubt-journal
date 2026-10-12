@@ -9,7 +9,7 @@ ref: https://arxiv.org/abs/2209.03302
 permalink: /papers/quantifying-aleatoric-epistemic/
 # Approximate: first time it came up in your Claude transcripts.
 read: 2026-07-02
-depth: skim
+depth: read
 rating:
 tags: [uncertainty, probabilistic-methods]
 tldr: >

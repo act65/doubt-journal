@@ -370,7 +370,10 @@ side {
   letter-spacing: 0.05em;
 }
 
-.verdict-accepted { background: #e8f4e8; color: #070; }
+/* Violet, not green: the only strong colours on the site are the #a00 headings and the warm
+   depth ramp, and a green chip sat outside both. Violet is the one cool hue that reads as a
+   deliberate stamp next to red rather than as a traffic light. */
+.verdict-accepted { background: #eee9f6; color: #5a3d8c; }
 .verdict-rejected { background: #f7e8e8; color: #a00; }
 .verdict-pending  { background: #f0f0f0; color: #777; }
 
@@ -392,10 +395,13 @@ button.verdict .count { opacity: 0.6; }
   cursor: pointer;
 }
 
-.depth-skim     { background: #f4f4f4; color: #999; }
-.depth-read     { background: #eef1f6; color: #557; }
-.depth-rebuilt  { background: #e9f0e9; color: #363; }
-.depth-extended { background: #f6efe4; color: #850; }
+/* Depth is one warm ramp — pale grey through to deep umber — so the chips read as an ordering
+   rather than four unrelated labels. Deliberately not green: green belongs to the accepted
+   verdict, and a green 'rebuilt' chip next to it looked like a second verdict. Ochre sits in
+   the same warm family as the #a00 headings without competing with the red rejected chip. */
+.depth-read     { background: #f7eee0; color: #9a7434; }
+.depth-rebuilt  { background: #f3e1c0; color: #7c5511; }
+.depth-extended { background: #ecd3a3; color: #5c3c06; }
 .depth.active   { outline: 2px solid #a00; }
 
 .xp { font-size: 0.8em; color: #a00; font-weight: bold; }

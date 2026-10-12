@@ -21,6 +21,24 @@ script, not the template.
 `_data/stats.yml` and `tags/*.md` are generated. Never hand-edit them; rerun `python
 scripts/score.py`. CI runs `score.py --check` and fails if they are stale.
 
+## The pile (an experiment, not on the site)
+
+`scripts/pile.py` draws every published paper as a sheet of paper on a heap, seen from above,
+and writes `assets/images/pile.svg`. Nothing links to it — no page embeds it, `score.py` does
+not run it, and the svg is not committed. Run it by hand to look at the idea:
+
+```sh
+python scripts/pile.py
+```
+
+Two things are encoded, both about scale: one sheet per paper, and a sheet's thickness is the XP
+its depth earns, so the heap stands as tall as the reading was deep. It is deterministic —
+every position, angle and scribble is seeded from the paper's slug, never from the clock. Keep
+it that way if it ever does get published; a random redraw would put thousands of lines of noise
+into the diff. Layout is measured rather than guessed: sheets are placed so the next one can
+never cover the previous title and byline, and the heap splits into several heaps side by side
+once one gets taller than `HEAP_HEIGHT`.
+
 ## Adding a paper
 
 ```sh
@@ -36,9 +54,10 @@ Then write the review and rerun `python scripts/score.py`.
 Required: `layout: paper`, `slug` (must equal the folder name), `title`, `permalink:
 /papers/<slug>/`, `read` (an ISO date — the streak maths needs a real `YYYY-MM-DD`), `depth`.
 
-- `depth` is one of `skim` / `read` / `rebuilt` / `extended` and is what earns XP. Set it
-  honestly; the whole point of the scoring is that skimming twenty papers should not outscore
-  rebuilding two. `rebuilt` implies there is a notebook in the folder.
+- `depth` is one of `read` / `rebuilt` / `extended` and is what earns XP — one read is 1 XP, the
+  unit everything else is measured in. Set it honestly; the whole point of the scoring is that
+  reading twenty papers should not outscore rebuilding two. There is no `skim`: a paper you only
+  skimmed doesn't go in the journal. `rebuilt` implies there is a notebook in the folder.
 - `rating` is 0–10 and decides accepted/rejected. **Leave it blank until it has been decided** —
   blank means "under review", which is deliberately different from 0.
 - `tags` are slugs from `_data/tags.yml`. A tag not listed there still renders, it just falls

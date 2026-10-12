@@ -1,44 +1,37 @@
 ---
-layout: post
-title: Magnetic control of tokamak plasmas through deep reinforcement learning
-permalink: tokomak-plasma-rl
+layout: paper
+slug: performative-prediction
+title: "Performative Prediction"
+authors: "Perdomo et al."
+year: 2020
+venue: ICML
+ref: https://arxiv.org/abs/2002.06673
+permalink: /papers/performative-prediction/
+# Migrated from _drafts/2022-10-10-performative-prediction.md; `read` is that draft's filename
+# date, a placeholder shared by a batch of drafts — check it before publishing.
+read: 2022-10-10
+depth: read
 rating: 8
-ref: https://www.nature.com/articles/s41586-021-04301-9.pdf
+tags: [economics, fundamental-ml, reconception]
+question:
+tldr:
+notebooks: []
+related: []
+draft: true
+published: false
 ---
 
-# Magnetic control of tokamak plasmas through deep reinforcement learning
-
 ## Review
 
+*I haven't written this yet.*
 
-<hr>
-## Overview
-
-- Fusion
-- Plasma dunamics
-- ?
-
-<hr>
-## Additional thoughts
-
-
-# Performative prediction
-
-helloworld
-
-## Review
-
-<div class="center">
-<strong>Rating</strong>: {{ page.rating }} / 10
-</div>
-<hr>
-
-## Overview
+## Problem
 
 <blockquote cite="Perdomo 2020">
 Consider a simplified example of predicting credit default risk. A bank might estimate that a loan applicant has an elevated risk of default, and will act on it by assigning a high interest rate. In a self-fulfilling prophecy, the high interest rate further increases the customer's default risk.
 </blockquote>
 
+## Overview
 
 $$
 \text{PR}(\theta) = \mathop{\mathbb E}_{Z\sim D(\theta)} \ell(Z ; \theta)
@@ -50,8 +43,6 @@ $$
 $$
 
 
-
-
 $$
 \theta_{t+1} = \mathop{\text{argmin}}_{\theta} \mathop{\mathbb E}_{Z\sim D(\theta_t)} \ell(Z ; \theta)
 $$
@@ -61,8 +52,6 @@ $$
 <strong>Theorem 1.1</strong> (Informal). If the loss is smooth, strongly convex, and the mapping D(·) is sufficiently Lipschitz, then repeated risk minimization converges to performative stability at a linear rate. Moreover, if any one of these assumptions does not hold, repeated risk minimization can fail to
 converge at all.
 </blockquote>
-
-
 
 
 <blockquote><strong>Example 2.2</strong> (biased coin flip). Consider the task of predicting the outcome of a biased coin flip where the bias of the coin depends on a feature X and the assigned score fθ(X). In particular, define D(θ) in the following way. X is a 1-dimensional feature supported on {±1} and Y | X ∼ Bernoulli(1
@@ -77,10 +66,7 @@ with θSL = µ.
 
 $\text{Bernoulli}(\frac{1}{2} +\mu X + \epsilon \theta X)$ . Believing that $\mu = \theta X$ influences which samples we see (maybe because these are of higher value so we are more likely to choose them).
 
-
-<hr>
-
-## Thoughts
+## Additional thoughts
 
 So how can we view the data as being generated?
 
@@ -108,5 +94,4 @@ What do these assumptions mean for our debtor and creditor?
 
 Doesnt prove the uniqueness of optima?!
 
-Model based performative prediction!?
-We have some estimate / knowledge of $\nabla D(\theta)$? (kinda like the transition fn) This allows us to optimise without requiring extra samples!?
+- [ ] Model based performative prediction!? We have some estimate / knowledge of $\nabla D(\theta)$? (kinda like the transition fn) This allows us to optimise without requiring extra samples!?

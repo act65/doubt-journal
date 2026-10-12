@@ -7,18 +7,17 @@ year: 2024
 venue: arXiv
 ref: https://arxiv.org/abs/2411.00698
 permalink: /papers/wasserstein-flow-matching/
-# Approximate: first time it came up in your Claude transcripts.
-read: 2026-07-01
-# You said 'read'. If the dual-geom RFM implementations count as rebuilding this,
-# bump to 'rebuilt' (+5 XP) and list the notebooks below.
-depth: read
-rating:
+read: 2025-12-20
+depth: extended
+rating: 7
 tags: [generative-models, flow-matching, probabilistic-methods]
 tldr: >
   Generative modelling usually transports one source distribution to one target. Here the
   samples themselves are distributions, so the flow is matched over a whole family of them.
 notebooks: []
 related: [bfn]
+published: false
+draft: true
 ---
 
 ## Review
@@ -28,6 +27,8 @@ _Under review — I haven't written the verdict yet._
 ## Problem
 
 _Not written yet._
+
+What if we want to model a posterior distribution (which is a distribution over parameters of a parametric family - aka a distribution over distributons, implicitly represented by their parameters).
 
 ## Overview
 

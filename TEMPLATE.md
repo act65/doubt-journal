@@ -8,7 +8,7 @@ venue: $venue
 ref: $ref
 permalink: /papers/$slug/
 read: $read
-# skim (1 XP) | read (3) | rebuilt (8) | extended (15) — see _data/gamify.yml
+# read (1 XP) | rebuilt (3) | extended (5) — see _data/gamify.yml
 depth: $depth
 # Out of 10. Leave blank until you've decided — blank means "under review", not zero.
 rating:

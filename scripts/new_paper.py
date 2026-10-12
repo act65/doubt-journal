@@ -55,7 +55,7 @@ def main() -> int:
     parser.add_argument(
         "--depth",
         default="read",
-        choices=["skim", "read", "rebuilt", "extended"],
+        choices=["read", "rebuilt", "extended"],
         help="how carefully you read it — drives the XP (default: read)",
     )
     parser.add_argument("--tags", default="", help="comma-separated tag slugs; see _data/tags.yml")
