@@ -24,9 +24,16 @@ draft: true
 
 _Under review — I haven't written the verdict yet._
 
+Strengths:
+
+
+Weaknesses:
+
+
+
 ## Problem
 
-_Not written yet._
+_How can we represent a distribution over distributions._
 
 What if we want to model a posterior distribution (which is a distribution over parameters of a parametric family - aka a distribution over distributons, implicitly represented by their parameters).
 
