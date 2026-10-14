@@ -7,7 +7,7 @@ this script computed, so the numbers on the site are reproducible offline and la
 diff you can read (``xp: 16 -> 24``).
 
     python scripts/score.py            # recompute, write, print the summary
-    python scripts/score.py --check    # fail if _data/stats.yml is stale (used by CI)
+    python scripts/score.py --check    # fail if _data/stats.yml is stale
 
 Also regenerates the per-tag stub pages in ``tags/`` so every tag has a real URL.
 """
@@ -130,7 +130,10 @@ def score(papers, gamify, tags_cfg, backlog, today: dt.date) -> dict:
             return "under-review"
         return "accepted" if rating >= threshold else "rejected"
 
-    total_xp = sum(xp_of(p) for p in papers)
+    earned_xp = sum(xp_of(p) for p in papers)
+    read_weeks = {iso_week(p["read_date"]) for p in papers if p["read_date"]}
+    idle = idle_weeks(read_weeks, gamify.get("idle_penalty") or {}, today)
+    total_xp = max(0, earned_xp - idle["xp_lost"]) if idle else earned_xp
 
     # Rank: the highest threshold we have passed, and how far to the next one.
     ranks = sorted(gamify.get("ranks") or [], key=lambda r: r["at"])
@@ -263,6 +266,8 @@ def score(papers, gamify, tags_cfg, backlog, today: dt.date) -> dict:
     stats = {
         "papers": len(papers),
         "xp": total_xp,
+        "xp_earned": earned_xp,
+        "idle": idle,
         "rank": {"name": current.get("name"), "at": current.get("at", 0)},
         "next_rank": next_rank,
         "accepted": statuses["accepted"],
@@ -278,6 +283,32 @@ def score(papers, gamify, tags_cfg, backlog, today: dt.date) -> dict:
     }
     stats["badges"] = award(papers, stats, gamify, tags_cfg, xp_of, status_of)
     return stats
+
+
+def idle_weeks(read_weeks: set[str], cfg: dict, today: dt.date) -> dict | None:
+    """Charge every finished week since ``cfg['since']`` that has no paper in it.
+
+    The current week is only reported, never charged: it can still be saved before Sunday.
+    """
+    since = as_date(cfg.get("since"))
+    if not since:
+        return None
+    each = int(cfg.get("xp", 1))
+    this_week = week_start(today)
+    missed, cursor = [], week_start(since)
+    while cursor < this_week:
+        if iso_week(cursor) not in read_weeks:
+            missed.append(iso_week(cursor))
+        cursor += dt.timedelta(days=7)
+    return {
+        "since": since.isoformat(),
+        "xp_each": each,
+        "missed": missed,
+        "xp_lost": each * len(missed),
+        "this_week": iso_week(this_week),
+        "this_week_safe": iso_week(this_week) in read_weeks or this_week < week_start(since),
+        "deadline": (this_week + dt.timedelta(days=6)).isoformat(),
+    }
 
 
 def award(papers, stats, gamify, tags_cfg, xp_of, status_of) -> list[dict]:
@@ -371,7 +402,7 @@ def lint(papers) -> list[str]:
 
 def render_stats(stats: dict) -> str:
     body = yaml.safe_dump(stats, sort_keys=False, allow_unicode=True, width=100)
-    return f"{STAMP}\n# Run it after adding or editing a paper; CI checks that it is current.\n\n{body}"
+    return f"{STAMP}\n# Run it after adding or editing a paper; CI rescores at build time.\n\n{body}"
 
 
 def tag_stub(tag: dict) -> str:
@@ -408,6 +439,18 @@ def summarise(stats: dict) -> str:
     lines = [
         f"  {stats['papers']} papers · {stats['xp']} XP · {rank['name']}",
     ]
+    idle = stats["idle"]
+    if idle:
+        if idle["missed"]:
+            lines.append(
+                f"  -{idle['xp_lost']} XP for {len(idle['missed'])} idle "
+                f"week{'' if len(idle['missed']) == 1 else 's'} (earned {stats['xp_earned']})"
+            )
+        if not idle["this_week_safe"]:
+            lines.append(
+                f"  nothing read in {idle['this_week']} yet — finish a paper by "
+                f"{idle['deadline']} or lose {idle['xp_each']} XP"
+            )
     if nxt:
         lines.append(f"  {nxt['remaining']} XP to {nxt['name']} ({nxt['pct']}%)")
     year = stats["year"]

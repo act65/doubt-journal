@@ -19,7 +19,10 @@ templates only read `site.data.stats`; they never do arithmetic. If a number is 
 script, not the template.
 
 `_data/stats.yml` and `tags/*.md` are generated. Never hand-edit them; rerun `python
-scripts/score.py`. CI runs `score.py --check` and fails if they are stale.
+scripts/score.py`. CI reruns `score.py` itself before every build (and every Monday 00:15 UTC on
+a schedule), so the site is scored as of the build date — streaks and the idle-week XP penalty
+(`idle_penalty` in `_data/gamify.yml`) depend on today. The committed `stats.yml` is a snapshot
+that keeps the scoreboard's history readable in the diff.
 
 ## The pile (an experiment, not on the site)
 

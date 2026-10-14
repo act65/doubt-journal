@@ -128,9 +128,9 @@ bundle install
 bundle exec jekyll serve
 ```
 
-Pushes to `master` build and deploy through `.github/workflows/pages.yml`. The workflow runs
-`score.py --check` first, so a review committed without a rescore fails the build rather than
-quietly publishing stale numbers. It cannot use the stock GitHub Pages build because the site
+Pushes to `master` build and deploy through `.github/workflows/pages.yml`. The workflow reruns
+`score.py` before building, so the site is always scored as of the build date (UTC), and a
+Monday cron rebuild makes idle-week XP losses land without a push. It cannot use the stock GitHub Pages build because the site
 uses `jekyll-scholar` and a `_plugins/` file, both of which that build ignores.
 
 ## Conventions

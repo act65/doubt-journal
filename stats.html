@@ -18,6 +18,12 @@ permalink: /stats/
   <div class="rank-block">
     <div class="rank-name">{{ s.rank.name }}</div>
     <div class="rank-xp">{{ s.xp }} XP over {{ s.papers }} paper{% if s.papers != 1 %}s{% endif %}</div>
+    {% if s.idle and s.idle.xp_lost > 0 %}
+      <div class="note bad">
+        {{ s.xp_earned }} earned, {{ s.idle.xp_lost }} lost to {{ s.idle.missed.size }}
+        week{% if s.idle.missed.size != 1 %}s{% endif %} with nothing read.
+      </div>
+    {% endif %}
     {% if s.next_rank %}
       <div class="bar"><span style="width: {{ s.next_rank.pct }}%"></span></div>
       <div class="note">{{ s.next_rank.remaining }} XP to {{ s.next_rank.name }}</div>
@@ -65,6 +71,7 @@ permalink: /stats/
   <p class="note">
     <strong>{{ s.streak.current }}</strong> week{% if s.streak.current != 1 %}s{% endif %} running
     · best <strong>{{ s.streak.best }}</strong>. A week counts if you finished at least one paper.
+    {% if s.idle %}Since {{ s.idle.since }}, a week without one costs {{ s.idle.xp_each }} XP.{% endif %}
   </p>
   <div class="sparkline">
     {% for w in s.streak.weeks %}

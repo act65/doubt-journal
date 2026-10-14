@@ -33,6 +33,14 @@ ranks:
 # Papers per calendar year. The burn-down on /stats/ measures against this.
 annual_target: 52
 
+# Use it or lose it. Every finished ISO week (Monday to Sunday) from `since` onwards with no
+# paper read costs `xp`. The current week is never charged — you have until Sunday — so the
+# first week that can cost anything is the one containing `since`. Losses come off the total
+# and so can cost a rank; XP never goes below zero.
+idle_penalty:
+  since: 2026-10-14
+  xp: 1
+
 # A paper counts as accepted at or above this rating; below it, rejected. No rating at all
 # means the review is still under review.
 accept_threshold: 5
