@@ -11,10 +11,72 @@ permalink: /papers/rasp/
 # now `###` under Overview). `read` is that draft's filename date, a placeholder — check it.
 read: 2024-10-10
 depth: read
-rating: 9
+# Your hand rating from before the rubric. Nothing reads it — the rating is now
+# computed from the axis scores. Kept so you can compare; delete it whenever.
+rating_before_rubric: 9
 tags: [interpretability, memory, reconception]
 question:
 tldr:
+# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a tldr, every
+# axis scored and answered, and at least one plus and one minus — journal.is_finished.
+confidence:
+review:
+  # Why: What problem is being solved, why is it hard, and is it worth solving?
+  why:
+    score:        # 1–4
+    answer:
+    plus:
+      -
+    minus:
+      -
+  # Idea: Is the solution principled — built from first principles with the right tools, rather than ad hoc?
+  idea:
+    score:        # 1–4
+    answer:
+    plus:
+      -
+    minus:
+      -
+  # Contribution: What does it add that wasn't known or possible before — the result, and the insight behind it?
+  contribution:
+    score:        # 1–4
+    answer:
+    plus:
+      -
+    minus:
+      -
+  # Rigour: Can every claim be traced to the evidence for it — and does that evidence hold?
+  rigour:
+    score:        # 1–4
+    claims:
+      - claim:
+        evidence:
+        holds:        # yes | partly | no | unverified
+    plus:
+      -
+    minus:
+      -
+  # Scope: When does the contribution actually apply — what does it assume, stated and unstated?
+  scope:
+    score:        # 1–4
+    assumptions:
+      - assumption:
+        stated:        # yes | no
+        implications:
+    plus:
+      -
+    minus:
+      -
+  # Clarity: Is it one simple narrative — a well-motivated problem, leading to minimal experiments and an easily interpretable result?
+  clarity:
+    score:        # 1–4
+    answer:
+    plus:
+      -
+    minus:
+      -
+takeaways:
+  -
 notebooks: []
 related: []
 # The [@key] citations below need a bibliography before this is published:
@@ -23,211 +85,3 @@ related: []
 draft: true
 published: false
 ---
-
-## Review
-
-*I haven't written this yet.*
-
-## Problem
-
-## Overview
-
-### Attention is all you need
-
-\begin{align*}
-\text{Attention}(x, W_Q, W_K, W_V) &= \text{Softmax}((W_Qx)^T W_Kx) (W_Vx) \\
-\text{MultiHeadAttention}(x) &= \sum_i^N \text{Attention}(x, W_Q^i, W_K^i, W_V^i) W_O^i
-\end{align*}
-
-```python
-def transfomer(x, depth):
-    # x is a [L, D] matrix
-    for _ in range(layers):
-        mlp = MultiLayerPerceptron()
-        x = map(mlp, x)
-
-        mha = MultiHeadAttention()
-        x = mha(x)
-    return x
-```
-
-In practice transformers work very well! Attention really is all you need...
-<!-- [@vaswani2023attention] -->
-
-### Existing work
-
-> Goal: Understand transformers. How do they work? Why?
-
-Theory on transformers;
-
-- Are they universal? Yes. [@yun2020transformers]
-- But in practice they find some regular languages difficult.  [@bhattamishra2020ability]
-
-Great. But we want a more mechanistic understanding of what they can do and how they do it, much like we have for RNNs (DFA extraction [@weiss_dfa]) and CNNs (feature and circuit extraction [@olah2020zoom]).
-
-### RASP (restricted access sequence program)
-
-<!-- can arbitrary combinations of select and aggregate be mapped onto transformers? -->
-
-> [We propose] a computational model for the transformer-encoder in the form of a programming language [@weiss2021thinking]
-
-- operations are applied to sequences
-- operations;
-    - input, indices, length
-    - element-wise operators (correspond to the MLP layers)
-    - select, aggregate (correspond to the MHA layers)
-
-### Element wise operations
-
-- math operations
-    - addition
-    - multiplication
-    - power
-- logical operations
-    - and, or
-    - less than, equal to
-- other
-    - max, min
-
-Since MLPs are known to be universal function approximators, we can assume that we can represent any element wise operation as an MLP.
-Thus we know that these RASP operations can be represented by the MLP layers of the transformer.
-
-### Select, aggregate
-
-Select
-
-$$
-\text{select}([0,1,2], [1,2,3], <) =
-\begin{bmatrix}
-T & F & F \\
-T & T & F \\
-T & T & T \\
-\end{bmatrix}
-$$
-
-Aggregate
-
-$$
-\text{aggregate}(\begin{bmatrix}
-T & F & F \\
-T & T & F \\
-T & T & T \\
-\end{bmatrix}, [10, 20, 30]) =
-[10, 15, 20]
-$$
-
-<!-- ### Selector width
-
-$$
-\text{selector width}(\begin{bmatrix}
-T & F & F \\
-T & T & F \\
-T & T & T \\
-\end{bmatrix}) = [1, 2, 3]
-$$ -->
-
-<!-- something they dont really touch on.
-this is the power of linear algebra.
-we can embed / represent logical operations into matrices / matmul.
-aside: representation theory of groups!
- -->
-
-### Examples
-
-```python
-def reverse(tokens):
-    flip = select(indices, length-indices-1, ==)
-    reverse = aggregate(flip, tokens)
-    return reverse
-```
-
-```python
-def sort(tokens):
-    smaller = select(tokens, tokens, <=)
-    target_pos = selector_width(smaller)
-    sel_sort = select(target_pos, indices , ==)
-    sort = aggregate(sel_sort, tokens)
-    return sort
-```
-
-### Attention maps
-
-![](/assets/images/rasp/weiss-attn-patterns-hist2.png)
-
-### Results
-
-![](/assets/images/rasp/weiss-results.png)
-
-<!-- ### Insights
-
-- the BOS acts as an extra memory cell
-- they write a RASP program to sort a list of numbers (the algorithm is known to require $O(n log n)$ time). the transformer uses $n^2$.  -->
-
-### Tracr
-
-> We show how to “compile” human-readable programs [written in RASP] into standard decoder-
-only transformer models. [@lindner2023tracr]
-
-NOTE that the definition of a transformer has changed slightly here: all the layers are residual layers which read / write from the 'residual stream'.
-
-### Example
-
-```python
-length = make_length() # `length` is not a primitive in our implementation.
-opp_index = length - rasp.indices - 1
-flip = rasp.Select(rasp.indices, opp_index, rasp.Comparison.EQ)
-reverse = rasp.Aggregate(flip, rasp.tokens)
-
-from tracr.compiler import compiling
-
-bos = "BOS"
-model = compiling.compile_rasp_to_model(
-    reverse,
-    vocab={1, 2, 3, 4, 5, 6, 7},
-    max_seq_len=5,
-    compiler_bos=bos)
-
-out = model.apply([bos, 1, 2, 3, 1, 3])
-out.decoded -> ['BOS', 3, 1, 3, 2, 1]
-```
-
-### Removed support for selector combination
-
-The RASP language permits combining arbitrary selectors elementwise using boolean operators.
-
-Let $S_1, S_2 \in \mathcal S$ be two selectors. And $m: \mathcal S \to [0, 1]^{d\times d}$ be a function that represents a selector as a matrix.
-
-
-For every binary operation $\circ$ is there a matrix $M$ such that
-
-\begin{align*}
-S_1 \;\text{and}\; S_2 &= m(S_1) + m(S_2) \\
-S_1 \;\text{or}\; S_2 &= m(S_1) ? m(S_2)
-\end{align*}
-
-## Additional thoughts
-
-<!-- Tracr is a compiler from code to linear algebra!? -->
-
-Caveats. The link between the RASP program and a learned transformer for the same task is tenuous.
-NNs often learn unusual representations and solutions to problems.
-Just because RASP shows us that a transformer can solve a problem in a certain way, does not mean a transformer can learn to solve the problem.
-
-Other interesting work on transformers
-
-- (restricted) transformer to code. [@friedman2023learning]
-- Similar to the distill.pub circuits investigation of cnns. https://transformer-circuits.pub/ explores transformers in a similar visual / interpretable way.
-- [@zhou2023algorithms] RASP-Generalization Conjecture: Transformers tend to length generalize on a task if the task can be solved by a short RASP program which works for all input lengths
-- [transformer superposition](https://transformer-circuits.pub/2022/toy_model/index.html)
-
-## Feedback
-
-They assume
-
-- we can ignore layer norm.
-- 'hard' attention.
-- not restricted to alternating layers of MLP and MHA.
-- allow the composition of attention maps.
-- allow arbitrary control flow applied to the RASP ops (```if, for, while```).
-
-(NOTE they are not explicit about most of these assumptions. cause for caution!)

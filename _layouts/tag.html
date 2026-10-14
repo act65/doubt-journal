@@ -3,7 +3,7 @@ layout: default
 ---
 
 {% assign meta = site.data.tags[page.tag] %}
-{% assign tagged = site.papers | where_exp: "p", "p.tags contains page.tag" | sort: "read" | reverse %}
+{% assign tagged = site.papers | where_exp: "p", "p.part == nil" | where_exp: "p", "p.tags contains page.tag" | sort: "read" | reverse %}
 
 <div id="tag">
   <h1>{{ page.title }}</h1>

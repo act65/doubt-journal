@@ -5,8 +5,13 @@ Notes for working in this repo.
 ## What this is
 
 A reading log that publishes itself. One folder per paper under `_papers/<slug>/`, holding
-`index.md` (the review) and any marimo notebooks that rebuild the paper's idea from scratch. A
+`index.md` (the minimal review), optional longer pages beside it (`tutorial.md`,
+`discussion.md`, `thoughts.md`), and any marimo notebooks that rebuild the paper's idea from scratch. A
 Jekyll site renders it, and `scripts/score.py` turns the reviews into a scoreboard.
+
+What to read next is drawn, not chosen: `_data/queue.yml` is a few thousand papers scraped out
+of Zotero, Google Keep, Google Scholar alert mail and the repo's own half-written folders, and
+`scripts/next_paper.py` samples one with a thumb on the scale for recent interests.
 
 Two audiences, one source: the front matter is for the site and the scorer, the body is for a
 human reading the review later.
@@ -18,14 +23,16 @@ preference — an AI-written review would make the journal worthless, however go
 
 **Never, on the user's behalf:**
 
-- Write or draft any part of a review body — not `## Review`, `## Problem`, `## Overview`,
-  `## Additional thoughts` or `## Feedback`, and not the `tldr:` either. Not as a "first draft
-  to edit", not as filler, not by paraphrasing what they said in chat into a paragraph.
+- Write or draft any part of a review — not the `index.md` body, not `tldr`, `takeaways`, any
+  axis `answer`, `plus` or `minus`, any row of the claims or assumptions tables, and not a word
+  of `tutorial.md`,
+  `discussion.md` or `thoughts.md`. Not as a "first draft to edit", not as filler, not by
+  paraphrasing what they said in chat into a paragraph.
 - Give opinions on a paper: whether it is good, whether the contribution is real, whether the
   experiments hold up, what rating it deserves, which archetype tag it earns. If asked "what do
   you think of this paper?", say this journal is the one place you don't answer that, and offer
   something from the list below instead.
-- Set `rating`, `depth` or `read`, or edit the user's prose for anything beyond typos and
+- Set an axis `score`, `confidence`, `depth` or `read`, or edit the user's prose for anything beyond typos and
   broken markdown/LaTeX they asked you to fix.
 
 A placeholder saying a section isn't written yet is correct; invented prose is not.
@@ -49,15 +56,19 @@ A placeholder saying a section isn't written yet is correct; invented prose is n
 ## The split that matters
 
 **Python computes, Jekyll renders.** Every number on the site — XP, rank, streaks, badges,
-backlog coverage — is produced by `scripts/score.py` into `_data/stats.yml` and committed. Liquid
+queue size — is produced by `scripts/score.py` into `_data/stats.yml` and committed. Liquid
 templates only read `site.data.stats`; they never do arithmetic. If a number is wrong, fix the
 script, not the template.
 
 `_data/stats.yml` and `tags/*.md` are generated. Never hand-edit them; rerun `python
-scripts/score.py`. CI reruns `score.py` itself before every build (and every Monday 00:15 UTC on
-a schedule), so the site is scored as of the build date — streaks and the idle-week XP penalty
-(`idle_penalty` in `_data/gamify.yml`) depend on today. The committed `stats.yml` is a snapshot
-that keeps the scoreboard's history readable in the diff.
+scripts/score.py`. `_data/queue.yml` and `_data/dropped.yml` are machine-managed but *are*
+meant to be edited by hand when needed — they are data, not output.
+
+CI reruns `score.py` itself before every build, and on a daily 00:15 UTC schedule, so the site
+is scored as of the build date. Three numbers depend on today: streaks, the idle-week XP
+penalty (`idle_penalty`) and overdue reviews (`review_deadline`), both in `_data/gamify.yml`.
+The committed `stats.yml` is a snapshot that keeps the scoreboard's history readable in the
+diff.
 
 ## The pile (an experiment, not on the site)
 
@@ -79,13 +90,26 @@ once one gets taller than `HEAP_HEIGHT`.
 
 ## Adding a paper
 
+Normally you don't choose — you draw:
+
 ```sh
-python scripts/new_paper.py <slug> --from-backlog "<title fragment>"
+python scripts/next_paper.py          # draw one, then [r]eview / [s]kip / [d]rop
+```
+
+Accepting scaffolds the folder and starts a two-week clock. By hand:
+
+```sh
+python scripts/new_paper.py <slug> --from-queue "<title fragment>"
 # or fully by hand:
 python scripts/new_paper.py <slug> --title "..." --ref <url> --year <year> --tags a,b
 ```
 
 Then write the review and rerun `python scripts/score.py`.
+
+Note what `new_paper.py --draft` does and does not do: it leaves `read:` **blank** and sets
+`draft: true` / `published: false`. `next_paper.py` always uses it, because accepting a paper
+is not the same as having read it and a wrong `read` date silently corrupts the streak. The
+`read` date is the user's to fill in when they finish.
 
 ## Front matter contract
 
@@ -96,55 +120,165 @@ Required: `layout: paper`, `slug` (must equal the folder name), `title`, `permal
   unit everything else is measured in. Set it honestly; the whole point of the scoring is that
   reading twenty papers should not outscore rebuilding two. There is no `skim`: a paper you only
   skimmed doesn't go in the journal. `rebuilt` implies there is a notebook in the folder.
-- `rating` is 0–10 and decides accepted/rejected. **Leave it blank until it has been decided** —
-  blank means "under review", which is deliberately different from 0.
+- `review` holds one entry per axis in `_data/rubric.yml` — `{score, answer, plus, minus}`, with
+  the rigour and scope axes swapping `answer` for a table (`claims`, `assumptions`). Scores are
+  1–4. All the user's to write. `confidence` (1–5) sits beside it and isn't part of the rating.
+- **There is no `rating:` key.** The rating is computed by `journal.compute_rating`: the mean
+  axis score rescaled to 0–10, capped at `floor_cap` if any axis scores 1. It decides
+  accepted/rejected, and only once the review is finished. `rating_before_rubric:` in some
+  reviews is the user's old hand rating, kept for comparison; nothing reads it.
+- `takeaways` is a list of short markdown items.
 - `tags` are slugs from `_data/tags.yml`. A tag not listed there still renders, it just falls
   into the "other" filter row — add it to `tags.yml` when it earns a label.
 - `notebooks` is a list of `{file, what}`; the paper page links each one to GitHub.
 - `related` is a list of other paper slugs.
 
-Don't invent a `rating` or a `read` date on the user's behalf — both are their judgement, and a
+Don't invent an axis score or a `read` date on the user's behalf — both are their judgement, and a
 wrong `read` date silently corrupts the streak.
 
 ## Review structure
 
-Every review has the same shape. `scripts/score.py` warns when one doesn't.
+A paper's permalink is the **minimal review**, and the longer writing lives on part pages
+beside it. Reading order and writing order differ on purpose: the page shows the verdict
+first, but you write the axes first, while reading, and the tldr last.
 
 ```
-## Review              required — the verdict; what's the contribution, does the paper show it?
-## Problem             required — what's being solved and why it's hard; set up the notation
-## Overview            required — the paper in my own words, the tutorial I wish I'd had
-## Additional thoughts optional — my ideas, extensions, open questions (use `- [ ]`)
-## Feedback            optional — what the authors should have done
+_papers/<slug>/index.md       /papers/<slug>/            the minimal review — required
+_papers/<slug>/tutorial.md    /papers/<slug>/tutorial/   extended summary: problem, setting, construction
+_papers/<slug>/discussion.md  /papers/<slug>/discussion/ long-form argument; `## Feedback` for the authors
+_papers/<slug>/thoughts.md    /papers/<slug>/thoughts/   extensions, open questions (`- [ ]`)
+_papers/<slug>/notes.md       never published            private scratch, pasted chats
 ```
 
-Don't put an `# H1` title in the body; the layout renders `title` from the front matter. Don't
-hand-write the rating either — the layout renders it from `rating:`. Break `## Overview` into
-`###` subsections that follow the construction rather than the paper's own section order.
+`index.md` is almost all front matter — `tldr`, `confidence`, `review`, `takeaways` — and its
+body is an optional short verdict paragraph. The layout renders the score row, then one block
+per axis (question, score, answer or table, + and − points), then links whichever part pages
+exist. `/rubric/` renders the rubric itself.
 
-All of these sections are the user's to write — see *Human reviews only* above.
+- **The rubric lives in `_data/rubric.yml`** and is the user's to edit: the axes, their
+  questions, the table columns, the scale, the cap, and the `ideal` paragraph (theirs to
+  write — it currently quotes WRITING-HEURISTICS.md §0). The axes are meant to be orthogonal
+  and to be about the paper, never the reader — why (the problem), idea (how principled the
+  solution is), contribution (the delta to prior work), rigour (claims vs evidence), scope
+  (when it applies), clarity (whether why, idea and evidence form one simple narrative). What a paper gave the reader goes
+  in `takeaways`. The layout, `/rubric/`, `score.py` and `new_paper.py` all read it. Don't add, drop or
+  reword axes on the user's behalf.
+- **Paper badges** (`PAPER_BADGES` / `paper_badges` in `score.py`) are rules on one paper's
+  axis scores, rating, confidence and tables — Best Paper, Hidden Gem, Jekyll & Hyde, … Only
+  finished reviews earn them; `score.py` writes the keys to `stats.reviews[slug].badges` and
+  the catalogue to `stats.paper_badges`. They read axes by key, so renaming an axis in
+  `rubric.yml` silences the badges that use it.
+- **YAML reads a bare `yes`/`no` as a boolean**, so `holds: yes` arrives as `true`.
+  `journal.cell` and the layout turn it back; quote the `values` lists in `rubric.yml`.
+- **Finished** means published, with a tldr, every axis scored and answered (a table needs at
+  least one complete row), and at least one plus and one minus — `journal.missing_core`. Until
+  then the verdict is "under review"; `score.py` writes each paper's status and rating to
+  `stats.reviews` and the templates only read it.
+- **Part pages** are `layout: paper-part` with `slug` and `part` set; `new_paper.py <slug> --part
+  tutorial` scaffolds one. The part names, labels and order are in `_data/parts.yml`.
+  `site.papers` contains them, so every listing filters `where_exp: "p", "p.part == nil"`.
+  `_plugins/parts.rb` drops a part page whose review isn't published, so a draft's tutorial
+  never leaks onto the site on its own.
+- **`notes.md`** is excluded in `_config.yml` and carries `published: false`. Pasted chat
+  answers go there until the user rewrites them, never on a public page.
 
-## Mining old conversations
+Don't put an `# H1` title in any body; the layouts render it. Break `tutorial.md` into `###`
+subsections that follow the construction rather than the paper's own section order.
 
-`scripts/mine_conversations.py` scans `~/.claude/projects/**/*.jsonl` for paper identifiers and
-ranks them by how the paper actually came up. The scoring rule that matters: a mention is
-*diluted by how many other papers share the same message*, so a paper named alone counts far
-more than one item in a thirty-paper reading list. `solo` mentions drive the depth guess, and
-`extended` is never inferred.
+All of it is the user's to write — see *Human reviews only* above.
 
-Output goes to `.mined/report.yml`, which is **gitignored — it quotes private conversations and
-this repo is public**. `--draft <key>` scaffolds `_papers/<slug>/index.md` with `draft: true`
-and `published: false`, so it is invisible to both Jekyll and the scoreboard until promoted.
+## The reading queue is internal
 
-Drafts carry a `MINED EVIDENCE` comment block of raw material. `score.py` warns if that block
-survives into a published review. Scrub it before flipping `draft: false`.
+`_data/queue.yml` is the database of papers waiting to be read. It is **not published** — no
+page renders it, and no tag page lists queued entries. Three scripts own it:
 
-## The backlog is internal
+```sh
+# (re)build it from the exports
+python scripts/import_queue.py --bib ~/all-zotero.bib --keep ~/keep-dump.md \
+    --mbox ~/scholar.mbox
+python scripts/import_queue.py                      # just re-sync _papers/, keep everything
+python scripts/resolve_queue.py                     # fill in missing titles and links
+python scripts/resolve_queue.py --pmlr v97          # ...from a PMLR volume instead of arXiv
+python scripts/next_paper.py                        # draw one and decide
+```
 
-`_data/backlog.yml` is the reading queue and is **not published** — no page renders it, and no
-tag page lists queued entries. It exists for `new_paper.py --from-backlog` and for the coverage
-line `score.py` prints in the terminal. Don't add a page that exposes it.
+The sources, worst-documented first: Zotero (`--bib`) has no date-added; Keep (`--keep`) has
+no dates at all; Scholar alert mail (`--mbox`, Gmail Takeout) has a real `Date:` header, which
+makes it the only source where `added` is exact rather than estimated.
 
+Scholar is also by far the biggest — ~12k paper mentions out of 9.8k emails, about 62% of the
+draw — and the weakest signal per paper, because almost all of these are *author* alerts
+("Yoshua Bengio - new articles"), not topic queries. `source_interest` in
+`_data/sampling.yml` is the dial for that; it ships neutral.
+
+An entry holds `title`, `url`, `authors`, `year`, the `source` it came from, the `added` date
+driving recency, `strikes`, and `taken` once it has been accepted. Hand-editing is fine;
+re-importing preserves strikes, deadlines, deadlines' slugs and looked-up titles, matching on
+normalised URL, then title, then the `alias` a lookup left behind.
+
+Things that will bite:
+
+- **`import_queue.py` is safe to rerun, including with no arguments** — the queue folds itself
+  back in ahead of the exports. Only `--fresh` starts over.
+- **Zotero and Keep record no date-added.** `added` is estimated: Zotero's `urldate`, else the
+  publication year; for Keep, the arXiv month or conference year in a link, propagated through
+  the file's newest-first ordering. `added_est: true` marks a guess. Don't present these as
+  real dates.
+- **`added` is the *most recent* sighting**, not the first. A paper written down again this
+  year is a current interest, which is the whole point of the recency weight.
+- **Dropped papers need `_data/dropped.yml`.** The exports still contain them, so a tombstone
+  is the only thing keeping a skipped-out paper from reappearing on the next import. Deleting
+  a line there lets a paper back into the draw.
+- **A paper leaves the queue when its review is finished** — published, rated, and the core
+  review written (see *Review structure*). That
+  definition lives in `scripts/journal.py:is_finished` and nowhere else; the queue and the
+  scoreboard have to agree on it.
+- **Patents, meeting abstracts and blog mirrors are not papers** and never enter the queue —
+  see `not_a_paper()`. The rule never overrules a decision, though: anything already
+  `curated`, `starred` or `taken` is kept whatever its URL looks like.
+- **Only topic tags are guessed.** `import_queue.py` never infers an archetype tag — which
+  archetype a paper earns is a judgement about its contribution, so it stays the user's. The
+  archetype tags in the queue all came from the hand-curated entries.
+- **A star is the best signal in the file, divided by how many papers shared the email.**
+  A starred Scholar alert holding exactly one paper is unambiguous, so that paper is
+  `starred: true` outright (624 of them). An alert holding k papers starred all k at once, so
+  those get `flagged: true` with `siblings: k`, and the boost above 1.0 is divided by k —
+  `1 + (starred - 1) / siblings`. Never upgrade a `flagged` entry to `starred` yourself;
+  which of the k it was is the user's to say. `next_paper.py --flagged` draws that shortlist.
+- **Gmail's own labels are dropped** (Inbox, Unread, Important, Category *, Personal). Only
+  labels the user made are kept, in `labels` — here `gscholar` and `Interesting papers`.
+  Neither is a signal: `gscholar` is on everything, and `Interesting papers` is deprecated.
+  They are recorded because they are what the mail said, and nothing weighs them.
+- **Mail in Trash or Spam is skipped.** The user's deletions are the first filter the queue
+  gets ("I've already deleted the uninteresting looking ones"), so they are honoured, not
+  undone.
+- **Label and subject headers are folded.** Gmail wraps long headers, so `Interesting papers`
+  arrives as `Interesting\n papers`. Whitespace is collapsed before splitting on commas —
+  without that it becomes two labels, neither of which is the real one.
+- **`alert` is usually a person, not a subject**, so it is deliberately *not* fed to the tag
+  guesser. Don't treat it as a topic.
+
+`scripts/journal.py` is the one shared module: the "is it finished" rule, URL/title
+normalisation, and reading and writing the queue. It exists so three scripts can't disagree.
+
+## Sampling and deadlines
+
+`_data/sampling.yml` holds the weights, and nothing on the site reads it:
+
+    weight = interest x recency x strike_penalty^strikes x boosts x the entry's own `weight`
+
+`interest` is the largest `tag_interest` any of the entry's tags earns; `recency` halves every
+`halflife_days` down to a `floor` so nothing is ever unreachable. `python scripts/next_paper.py
+--explain` prints the arithmetic for a real draw, and `--top N` lists the heaviest entries.
+
+Those weights encode what the user likes. They were seeded from the tags already in `_papers/`
+and are theirs to retune — suggesting a change is fine, quietly rebalancing them is not.
+
+Accepting a paper writes `taken: {slug, on, due}`, due `review_deadline.days` later. After
+that, every finished week costs `review_deadline.xp`, capped at `max_xp` per paper so one
+abandoned draft can't zero the scoreboard, and nothing accepted before `since` is ever charged.
+The debt clears when the review is finished. CI rescores daily, so a deadline
+passing moves the scoreboard without a push.
 ## Tags, not folders
 
 Grouping is tags only; `_papers/` is deliberately flat. `_data/tags.yml` gives each tag a label
@@ -186,6 +320,8 @@ bundle exec jekyll serve      # local
 
 - Don't commit PDFs (gitignored) — put the link in `ref:`.
 - Don't hand-edit `_data/stats.yml` or `tags/`.
+- Don't invent an axis score, a `read` date, or a `depth` — and don't set `tag_interest` weights
+  on the user's behalf either.
 - Don't add arithmetic to Liquid templates; it belongs in `score.py`.
 - Don't refactor notebooks into shared modules. Duplication across notebooks is deliberate;
   each one is self-contained so it can be read alone.

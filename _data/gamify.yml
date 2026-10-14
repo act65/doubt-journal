@@ -44,3 +44,17 @@ idle_penalty:
 # A paper counts as accepted at or above this rating; below it, rejected. No rating at all
 # means the review is still under review.
 accept_threshold: 5
+
+# Accepting a paper from the reading queue starts a clock. `scripts/next_paper.py` writes a
+# due date `days` ahead into _data/queue.yml, and from then on the review owes you a verdict:
+# published, with a rating. A blank rating still counts as unfinished — that is the whole
+# point of leaving it blank.
+#
+# Every finished week past the due date costs `xp`, up to `max_xp` for any one paper, so a
+# paper you have quietly given up on cannot drain the whole scoreboard. Nothing accepted
+# before `since` is ever charged. CI rescores daily, so this moves without a push.
+review_deadline:
+  days: 14
+  xp: 1
+  max_xp: 4
+  since: 2026-10-14

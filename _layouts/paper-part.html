@@ -1,0 +1,36 @@
+---
+layout: default
+---
+
+{% comment %}
+  One of a review's optional long pages — tutorial, discussion, thoughts (see _data/parts.yml).
+  Served at /papers/<slug>/<part>/ by the collection permalink, and only when its review is
+  published (_plugins/parts.rb).
+{% endcomment %}
+{% assign review = site.papers | where: "slug", page.slug | where_exp: "d", "d.part == nil" | first %}
+{% assign siblings = site.papers | where: "slug", page.slug %}
+{% assign part = site.data.parts | where: "key", page.part | first %}
+
+<div id="paper">
+
+  <p class="part-crumb"><a href="{{ review.url | relative_url }}">{{ review.title }}</a></p>
+  <h1>{{ part.label | default: page.title }}</h1>
+
+  <nav class="part-nav">
+    <a href="{{ review.url | relative_url }}">Review</a>
+    {% for p in site.data.parts %}
+      {% assign doc = siblings | where: "part", p.key | first %}
+      {% if doc %}
+        · {% if p.key == page.part %}<strong>{{ p.label }}</strong>{% else %}<a href="{{ doc.url | relative_url }}">{{ p.label }}</a>{% endif %}
+      {% endif %}
+    {% endfor %}
+  </nav>
+
+  {{ content }}
+
+  <p class="paper-footer">
+    <a href="{{ review.url | relative_url }}">&laquo; back to the review</a>
+    · <a href="{{ site.repo }}/blob/{{ site.branch }}/_papers/{{ page.slug }}/{{ page.part }}.md">edit this page</a>
+  </p>
+
+</div>

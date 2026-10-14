@@ -1,0 +1,43 @@
+---
+layout: default
+title: Rubric
+permalink: /rubric/
+---
+
+{% comment %} Rendered straight from _data/rubric.yml — edit that, not this. {% endcomment %}
+{% assign r = site.data.rubric %}
+
+<div id="paper">
+
+  <h1>Rubric</h1>
+
+  {% if r.ideal %}
+    <blockquote class="paper-tldr">{{ r.ideal | markdownify | remove: '<p>' | remove: '</p>' }}</blockquote>
+  {% endif %}
+
+  <p>
+    Every review scores the paper {{ r.scale.min }}–{{ r.scale.max }} on each axis below
+    ({% for pair in r.scale.labels %}{{ pair[0] }} {{ pair[1] }}{% unless forloop.last %}, {% endunless %}{% endfor %}),
+    each with its reasons. The rating is not written by hand: it is the mean of those scores
+    rescaled to 0–{{ r.rating.max }}, and a {{ r.scale.min }} on any axis caps it at
+    {{ r.rating.floor_cap }}, so one fatal flaw can't be outvoted. At
+    {{ site.data.gamify.accept_threshold }} or above the paper is accepted.
+  </p>
+
+  {% for axis in r.axes %}
+    <section class="axis" id="{{ axis.key }}">
+      <h3>{{ axis.label }}</h3>
+      <p><strong>{{ axis.ask }}</strong></p>
+      {% if axis.blurb %}<p class="axis-ask">{{ axis.blurb }}</p>{% endif %}
+      {% if axis.table %}
+        <table class="axis-table">
+          <thead><tr>{% for column in axis.table.columns %}<th>{{ column.label }}</th>{% endfor %}</tr></thead>
+          <tbody><tr>{% for column in axis.table.columns %}<td class="note">{% if column.values %}{{ column.values | join: " / " }}{% else %}{{ column.blurb }}{% endif %}</td>{% endfor %}</tr></tbody>
+        </table>
+      {% endif %}
+    </section>
+  {% endfor %}
+
+  <p class="note">{{ r.confidence.label }} ({{ r.confidence.blurb | downcase | remove: "." }}) is scored 1–{{ r.confidence.max }} beside the rating, and isn't part of it.</p>
+
+</div>

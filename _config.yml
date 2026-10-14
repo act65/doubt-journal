@@ -76,6 +76,9 @@ exclude:
   - scripts/
   - CLAUDE.md
   - TEMPLATE.md
+  - TEMPLATE-part.md
+  # Private scratch beside a review — pasted chats, raw notes. Never published.
+  - "_papers/*/notes.md"
   - TODO
 
 

@@ -10,30 +10,71 @@ permalink: /papers/dpo/
 # Migrated from _drafts/2024-02-10-dpo.md; `read` is that draft's filename date.
 read: 2024-02-10
 depth: read
-# The draft carried `rating: -1`, which in the new scheme is blank — "under review", not zero.
-rating:
 tags: [rl, deep-learning, hidden-equivalence]
 question:
 tldr:
+# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a tldr, every
+# axis scored and answered, and at least one plus and one minus — journal.is_finished.
+confidence:
+review:
+  # Why: What problem is being solved, why is it hard, and is it worth solving?
+  why:
+    score:        # 1–4
+    answer:
+    plus:
+      -
+    minus:
+      -
+  # Idea: Is the solution principled — built from first principles with the right tools, rather than ad hoc?
+  idea:
+    score:        # 1–4
+    answer:
+    plus:
+      -
+    minus:
+      -
+  # Contribution: What does it add that wasn't known or possible before — the result, and the insight behind it?
+  contribution:
+    score:        # 1–4
+    answer:
+    plus:
+      -
+    minus:
+      -
+  # Rigour: Can every claim be traced to the evidence for it — and does that evidence hold?
+  rigour:
+    score:        # 1–4
+    claims:
+      - claim:
+        evidence:
+        holds:        # yes | partly | no | unverified
+    plus:
+      -
+    minus:
+      -
+  # Scope: When does the contribution actually apply — what does it assume, stated and unstated?
+  scope:
+    score:        # 1–4
+    assumptions:
+      - assumption:
+        stated:        # yes | no
+        implications:
+    plus:
+      -
+    minus:
+      -
+  # Clarity: Is it one simple narrative — a well-motivated problem, leading to minimal experiments and an easily interpretable result?
+  clarity:
+    score:        # 1–4
+    answer:
+    plus:
+      -
+    minus:
+      -
+takeaways:
+  -
 notebooks: []
 related: []
 draft: true
 published: false
 ---
-
-## Review
-
-*I haven't written this yet.*
-
-## Problem
-
-## Overview
-
-## Additional thoughts
-
-Why RLHF instead of supervised learning?
-
-Let's say we are learning a simple distribution.
-How many comparisons (aka samples) do I need to learn the distribution?
-
-- [ ] Does there exist a bandit problem for this setting?

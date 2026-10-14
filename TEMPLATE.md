@@ -10,14 +10,27 @@ permalink: /papers/$slug/
 read: $read
 # read (1 XP) | rebuilt (3) | extended (5) — see _data/gamify.yml
 depth: $depth
-# Out of 10. Leave blank until you've decided — blank means "under review", not zero.
-rating:
 tags: [$tags]
-question: >
-  What sent you here — a citation, a problem at work, a claim you didn't believe? One sentence.
-tldr: >
-  The whole paper compressed to a sentence. If you can't write this yet, that's the thing to go
-  work out.
+# What sent you here — a citation, a problem at work, a claim you didn't believe? One sentence.
+question:
+
+# The core review: what /papers/$slug/ shows, top to bottom. The axes and their questions are
+# in _data/rubric.yml. A review is finished (and gets a verdict) once it has a tldr, every axis
+# scored and answered — the rigour and scope tables need at least one complete row — and at
+# least one plus and one minus — scripts/journal.py:is_finished.
+#
+# Write it in the other order: the axes while reading, the tldr and takeaways last.
+
+# The whole paper compressed to a sentence or two.
+tldr:
+# 1–5: how sure you are of these scores. Not depth — effort isn't certainty.
+confidence:
+# No `rating:` — it's computed from the axis scores, and a 1 on any axis caps it.
+$review
+# One or two things worth remembering.
+takeaways:
+  -
+
 # Notebooks live in this folder next to the review.
 #   uv run marimo edit _papers/$slug/<name>.py
 notebooks: []
@@ -25,31 +38,10 @@ notebooks: []
 related: []
 ---
 
-## Review
+<!-- Optional: the verdict in a short paragraph, shown above the strengths and weaknesses.
+The longer pages are separate files beside this one, made when you need them:
 
-<The verdict, in a short paragraph. What is the contribution, and does the paper actually
-demonstrate it? This is the bit that justifies the rating — write it last, but keep it first.>
-
-## Problem
-
-<What is being solved, and why it is hard. Set up the notation and the setting here, so the
-overview can get straight to the idea.>
-
-## Overview
-
-<The paper in your own words — the tutorial you wish you'd been handed. Break it into `###`
-subsections that follow the construction, not the paper's section order. Build up from something
-already understood; restate the paper's notation in plain terms and keep a translation table if
-the symbols are heavy.>
-
-## Additional thoughts
-
-<Your ideas, not theirs. Extensions, alternative formulations, connections to other papers, and
-the open questions you're left with. Use `- [ ]` for anything you might actually chase later.>
-
-- [ ] <What's still unclear.>
-
-## Feedback
-
-<Optional. What the authors should have done — the experiment that's missing, the baseline that
-isn't there, the claim that outruns the evidence. Delete this section if the paper is fine.>
+    python scripts/new_paper.py $slug --part tutorial     # the extended summary
+    python scripts/new_paper.py $slug --part discussion   # the long argument, feedback
+    python scripts/new_paper.py $slug --part thoughts     # extensions, open questions
+-->

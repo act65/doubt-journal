@@ -475,6 +475,69 @@ blockquote.paper-tldr {
   color: #444;
 }
 
+/* the scores: one row of small labelled numbers, read before the prose */
+dl.paper-scores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em 1.4em;
+  margin: 1em 0;
+  padding: 0.5em 0;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+dl.paper-scores dt {
+  font-size: 0.7em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #aaa;
+}
+dl.paper-scores dd { margin: 0; font-size: 1.1em; color: #333; }
+dl.paper-scores .of { color: #aaa; font-size: 0.8em; }
+
+ul.paper-takeaways { padding-left: 1.2em; }
+ul.paper-takeaways li { margin: 0.3em 0; }
+
+dl.paper-scores dt a { color: inherit; text-decoration: none; }
+dl.paper-scores .score-total dd { font-weight: bold; color: #a00; }
+dl.paper-scores .score-confidence { margin-left: auto; }
+
+/* one block per rubric axis */
+section.axis { margin: 1.2em 0; }
+section.axis h3 { margin-bottom: 0.1em; }
+.axis-score { font-size: 0.75em; color: #888; font-weight: normal; margin-left: 0.3em; }
+.axis-ask { color: #888; font-size: 0.85em; font-style: italic; margin: 0 0 0.5em; }
+
+/* the claims and assumptions tables; scroll inside themselves on a phone, never the page */
+table.axis-table {
+  display: block;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.9em;
+  margin: 0.5em 0;
+}
+table.axis-table th, table.axis-table td {
+  border-bottom: 1px solid #eee;
+  padding: 0.3em 0.8em 0.3em 0;
+  text-align: left;
+  vertical-align: top;
+}
+table.axis-table th { font-size: 0.8em; color: #888; font-weight: normal; text-transform: uppercase; letter-spacing: 0.04em; }
+td.cell-yes    { color: #5a3d8c; }
+td.cell-partly { color: #9a7434; }
+td.cell-no     { color: #a00; }
+
+/* plus and minus share one list, marked rather than split into columns */
+ul.axis-pm { list-style: none; padding-left: 0; }
+ul.axis-pm li { margin: 0.25em 0; padding-left: 1.2em; text-indent: -1.2em; }
+ul.axis-pm li.plus::before  { content: "+"; display: inline-block; width: 1.2em; text-indent: 0; color: #5a3d8c; font-weight: bold; }
+ul.axis-pm li.minus::before { content: "\2212"; display: inline-block; width: 1.2em; text-indent: 0; color: #a00; font-weight: bold; }
+
+ul.paper-parts li { margin: 0.35em 0; }
+
+/* part pages: where you are, and the way back */
+.part-crumb { margin: 0; font-size: 0.9em; color: #888; }
+.part-nav { font-size: 0.9em; color: #888; margin-bottom: 1.5em; }
+
 ul.notebooks li, ul.related li, ul.backlog li { margin: 0.35em 0; }
 ul.backlog { list-style: none; padding: 0; }
 .starred { color: #c90; }
@@ -560,3 +623,22 @@ ul.backlog { list-style: none; padding: 0; }
 .badge.locked .badge-name { color: #777; }
 .badge-blurb { display: block; font-size: 0.82em; color: #777; }
 .badge-progress { display: block; font-size: 0.78em; color: #aaa; margin-top: 0.2em; }
+
+/* a paper's own badges: small outlined stamps, so they never read as the verdict chip */
+.paper-awards { margin-bottom: 0.5em; }
+.awards { display: inline; }
+.award {
+  display: inline-block;
+  padding: 0 6px;
+  margin: 2px 4px 2px 0;
+  border: 1px dashed #a00;
+  border-radius: 3px;
+  font-size: 0.72em;
+  letter-spacing: 0.03em;
+  color: #a00;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.award::before { content: "\2726\00a0"; }
+.award:hover { background: #fffafa; }
+.paper-card .awards { display: block; margin: 0.15em 0; }

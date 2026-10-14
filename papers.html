@@ -5,7 +5,8 @@ permalink: /papers/
 ---
 
 {% assign stats = site.data.stats %}
-{% assign papers = site.papers | sort: "read" | reverse %}
+{% comment %} Part pages (tutorial, discussion, …) are in the collection too; list reviews only. {% endcomment %}
+{% assign papers = site.papers | where_exp: "p", "p.part == nil" | sort: "read" | reverse %}
 
 <div id="papers">
 

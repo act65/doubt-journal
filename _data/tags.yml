@@ -60,6 +60,9 @@ neuroscience:
 economics:
   label: Economics & mechanism design
   kind: topic
+quantum-chemistry:
+  label: Quantum chemistry
+  kind: topic
 
 # ---------------------------------------------------------------- archetypes
 # "Recommend by contribution archetype, not topic" — these are the four that actually

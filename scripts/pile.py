@@ -230,10 +230,13 @@ def render(papers: list[dict], gamify: dict) -> str:
     threshold = gamify.get("accept_threshold", 5)
 
     def verdict_of(paper) -> str:
-        rating = paper.get("rating")
-        if rating is None:
+        # The same rule as the scoreboard: no verdict until the review is finished, and the
+        # rating (already computed by score.load_papers) only decides which one.
+        import journal  # noqa: PLC0415 — on sys.path once score is imported
+
+        if not journal.is_finished(paper):
             return "pending"
-        return "accepted" if rating >= threshold else "rejected"
+        return "accepted" if paper["rating"] >= threshold else "rejected"
 
     def sort_key(paper):
         return (paper.get("read_date") is None, paper.get("read_date"), paper["slug"])
@@ -338,7 +341,8 @@ def main() -> int:
     import score  # noqa: PLC0415 — score imports this module, so import it lazily
 
     gamify = yaml.safe_load((ROOT / "_data" / "gamify.yml").read_text(encoding="utf-8"))
-    papers = score.load_papers()
+    parts = yaml.safe_load((ROOT / "_data" / "parts.yml").read_text(encoding="utf-8")) or []
+    papers = score.load_papers(parts, score.journal.load_rubric())
 
     if args.check:
         if render(papers, gamify) != (TARGET.read_text(encoding="utf-8") if TARGET.exists() else ""):

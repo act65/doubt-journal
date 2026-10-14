@@ -2,7 +2,17 @@
 layout: default
 ---
 
+{% comment %}
+  The minimal review: tldr, scores, then one block per rubric axis (_data/rubric.yml), then
+  takeaways — the order you read a review in, not the order you write one. Everything longer
+  lives on the part pages in _data/parts.yml and is linked at the bottom. The rating is computed
+  by scripts/score.py and read from stats; nothing here does arithmetic.
+{% endcomment %}
 {% assign depth = site.data.gamify.depth[page.depth] %}
+{% assign r = site.data.rubric %}
+{% assign review = page.review %}
+{% assign rating = site.data.stats.reviews[page.slug].rating %}
+{% assign siblings = site.papers | where: "slug", page.slug %}
 
 <div id="paper">
 
@@ -22,6 +32,10 @@ layout: default
     {% if page.read %}<span class="read-on">read {{ page.read | date: "%b %Y" }}</span>{% endif %}
   </div>
 
+  {% capture awards %}{% include paper-badges.html slug=page.slug %}{% endcapture %}
+  {% assign awards = awards | strip %}
+  {% if awards != "" %}<div class="paper-awards">{{ awards }}</div>{% endif %}
+
   {% if page.tags and page.tags != empty %}
     <div class="paper-tags">{% include tag-list.html tags=page.tags %}</div>
   {% endif %}
@@ -34,7 +48,90 @@ layout: default
     <blockquote class="paper-tldr">{{ page.tldr | markdownify | remove: '<p>' | remove: '</p>' }}</blockquote>
   {% endif %}
 
-  {{ content }}
+  {% capture scores %}
+    {% if rating != nil %}
+      <div class="score-total" title="The mean of the axis scores, rescaled; a {{ r.scale.min }} on any axis caps it at {{ r.rating.floor_cap }}."><dt>{{ r.rating.label }}</dt><dd>{{ rating }}<span class="of">/{{ r.rating.max }}</span></dd></div>
+    {% endif %}
+    {% for axis in r.axes %}
+      {% assign value = review[axis.key].score %}
+      {% if value != nil %}
+        <div title="{{ axis.ask }}"><dt><a href="{{ '/rubric/' | relative_url }}#{{ axis.key }}">{{ axis.label }}</a></dt><dd>{{ value }}<span class="of">/{{ r.scale.max }}</span></dd></div>
+      {% endif %}
+    {% endfor %}
+    {% if page.confidence != nil %}
+      <div class="score-confidence" title="{{ r.confidence.blurb }}"><dt>{{ r.confidence.label }}</dt><dd>{{ page.confidence }}<span class="of">/{{ r.confidence.max }}</span></dd></div>
+    {% endif %}
+  {% endcapture %}
+  {% assign scores = scores | strip %}
+  {% if scores != "" %}<dl class="paper-scores">{{ scores }}</dl>{% endif %}
+
+  {% capture axes %}
+    {% for axis in r.axes %}
+      {% assign entry = review[axis.key] %}
+      {% assign plus = entry.plus | compact %}
+      {% assign minus = entry.minus | compact %}
+
+      {% capture table %}
+        {% if axis.table %}
+          {% capture body %}
+            {% for row in entry[axis.table.key] %}
+              {% capture cells %}{% for column in axis.table.columns %}{% assign v = row[column.key] %}{% if v == true %}{% assign v = "yes" %}{% elsif v == false %}{% assign v = "no" %}{% endif %}<td{% if column.values and v %} class="cell-{{ v | slugify }}"{% endif %}>{{ v | markdownify | remove: '<p>' | remove: '</p>' | strip }}</td>{% endfor %}{% endcapture %}
+              {% assign filled = cells | strip_html | strip %}
+              {% if filled != "" %}<tr>{{ cells }}</tr>{% endif %}
+            {% endfor %}
+          {% endcapture %}
+          {% assign body = body | strip %}
+          {% if body != "" %}
+            <table class="axis-table">
+              <thead><tr>{% for column in axis.table.columns %}<th{% if column.blurb %} title="{{ column.blurb }}"{% endif %}>{{ column.label }}</th>{% endfor %}</tr></thead>
+              <tbody>{{ body }}</tbody>
+            </table>
+          {% endif %}
+        {% endif %}
+      {% endcapture %}
+      {% assign table = table | strip %}
+
+      {% if entry.score != nil or entry.answer or table != "" or plus.size > 0 or minus.size > 0 %}
+        <section class="axis" id="axis-{{ axis.key }}">
+          <h3>{{ axis.label }}{% if entry.score != nil %} <span class="axis-score">{{ entry.score }}/{{ r.scale.max }}</span>{% endif %}</h3>
+          <p class="axis-ask">{{ axis.ask }}</p>
+          {% if entry.answer %}{{ entry.answer | markdownify }}{% endif %}
+          {{ table }}
+          {% if plus.size > 0 or minus.size > 0 %}
+            <ul class="axis-pm">
+              {% for item in plus %}<li class="plus">{{ item | markdownify | remove: '<p>' | remove: '</p>' }}</li>{% endfor %}
+              {% for item in minus %}<li class="minus">{{ item | markdownify | remove: '<p>' | remove: '</p>' }}</li>{% endfor %}
+            </ul>
+          {% endif %}
+        </section>
+      {% endif %}
+    {% endfor %}
+  {% endcapture %}
+  {% assign axes = axes | strip %}
+
+  {% comment %} strip_html so the template's HTML-comment prompts don't count as a verdict. {% endcomment %}
+  {% assign verdict = content | strip_html | strip %}
+  {% if verdict != "" or axes != "" %}
+    <h2>Review</h2>
+    {{ content }}
+    {{ axes }}
+  {% endif %}
+
+  {% assign takeaways = page.takeaways | compact %}
+  {% if takeaways.size > 0 %}
+    <h2>Takeaways</h2>
+    <ul class="paper-takeaways">
+      {% for item in takeaways %}<li>{{ item | markdownify | remove: '<p>' | remove: '</p>' }}</li>{% endfor %}
+    </ul>
+  {% endif %}
+
+  {% capture more %}{% for part in site.data.parts %}{% assign doc = siblings | where: "part", part.key | first %}{% if doc %}
+      <li><a href="{{ doc.url | relative_url }}">{{ part.label }}</a> — {{ part.blurb }}</li>{% endif %}{% endfor %}{% endcapture %}
+  {% assign more = more | strip %}
+  {% if more != "" %}
+    <h2>More</h2>
+    <ul class="paper-parts">{{ more }}</ul>
+  {% endif %}
 
   {% if page.notebooks and page.notebooks != empty %}
     <h2>Notebooks</h2>
@@ -56,7 +153,7 @@ layout: default
     <h2>Related</h2>
     <ul class="related">
       {% for slug in page.related %}
-        {% assign other = site.papers | where: "slug", slug | first %}
+        {% assign other = site.papers | where: "slug", slug | where_exp: "d", "d.part == nil" | first %}
         {% if other %}
           <li><a href="{{ other.url | relative_url }}">{{ other.title }}</a>{% if other.question %} — {{ other.question }}{% endif %}</li>
         {% else %}

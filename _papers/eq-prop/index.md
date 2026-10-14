@@ -10,46 +10,76 @@ permalink: /papers/eq-prop/
 # Migrated from _drafts/2024-08-01-eq-prop.md; `read` is that draft's filename date.
 read: 2024-08-01
 depth: read
-rating: 9
+# Your hand rating from before the rubric. Nothing reads it — the rating is now
+# computed from the axis scores. Kept so you can compare; delete it whenever.
+rating_before_rubric: 9
 tags: [neuroscience, deep-learning, optimisation, hidden-equivalence]
 question:
 tldr:
+# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a tldr, every
+# axis scored and answered, and at least one plus and one minus — journal.is_finished.
+confidence:
+review:
+  # Why: What problem is being solved, why is it hard, and is it worth solving?
+  why:
+    score:        # 1–4
+    answer:
+    plus:
+      -
+    minus:
+      -
+  # Idea: Is the solution principled — built from first principles with the right tools, rather than ad hoc?
+  idea:
+    score:        # 1–4
+    answer:
+    plus:
+      -
+    minus:
+      -
+  # Contribution: What does it add that wasn't known or possible before — the result, and the insight behind it?
+  contribution:
+    score:        # 1–4
+    answer:
+    plus:
+      -
+    minus:
+      -
+  # Rigour: Can every claim be traced to the evidence for it — and does that evidence hold?
+  rigour:
+    score:        # 1–4
+    claims:
+      - claim:
+        evidence:
+        holds:        # yes | partly | no | unverified
+    plus:
+      -
+    minus:
+      -
+  # Scope: When does the contribution actually apply — what does it assume, stated and unstated?
+  scope:
+    score:        # 1–4
+    assumptions:
+      - assumption:
+        stated:        # yes | no
+        implications:
+    plus:
+      -
+    minus:
+      -
+  # Clarity: Is it one simple narrative — a well-motivated problem, leading to minimal experiments and an easily interpretable result?
+  clarity:
+    score:        # 1–4
+    answer:
+    plus:
+      -
+    minus:
+      -
+takeaways:
+  -
 notebooks: []
 related: []
 draft: true
 published: false
 ---
 
-## Review
-
 Equilibrium Propagation (EP) is a learning algorithm that is inspired by the way the brain works. It is a biologically plausible learning algorithm that is based on the principle of energy minimization. The idea is to minimize the energy of the system by iteratively updating the state of the system until it reaches an equilibrium state. The key contribution of EP is that it demonstrates a connection between energy-based models and backpropagation.
-
-## Problem
-
-## Overview
-
-We start with an energy function that defines our model.
-
-$$
-E(u) = \frac{1}{2} \sum u_i^2 - \frac{1}{2} \sum_{i \neq j} W_{ij} \rho(u_i) \rho(u_j) - \sum_i b_i \rho(u_i)
-$$
-
-where $u$ is the state of the system, $W$ is the weight matrix, $b$ is the bias vector, and $\rho$ is the activation function. The energy function is a function of the state of the system and the parameters of the model.
-
-To achieve minimum energy, strongly connected units should have similar states.
-
-## Additional thoughts
-
-So as we scale to larger networks, we need;
-
-- more time / iterations for an equilibrium to be reached?!
-- how do you efficiently fit the topology into 3d...!?
-- ???
-
-- [ ] Still curious about connections between langevin dynamics and distributions. Want the ability to transform between implicit and explicit distributions easily?! To integrate the noise in langevin dynamics or to sample from a distribution!?
-
-## Refs
-
-- [Equilibrium Propagation with Continual Weight Updates](https://arxiv.org/abs/2005.04168)
-- [Training End-to-End Analog Neural Networks with Equilibrium Propagation](https://arxiv.org/abs/2006.01981)
-- [A solution to the learning dilemma for recurrent networks of spiking neurons](https://www.nature.com/articles/s41467-020-17236-y)

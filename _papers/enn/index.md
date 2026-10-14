@@ -9,13 +9,72 @@ ref: https://arxiv.org/abs/2107.08924
 permalink: /papers/enn/
 read: 2026-07-27
 depth: rebuilt
-rating:
 tags: [probabilistic-methods, uncertainty, deep-learning, hidden-equivalence]
 question: Why a *joint* over outputs — and how is it learned from single labels?
 tldr: >
   Sample one hypothesis $z$, then predict conditionally independently given it — so the
   correlation between predictions at different inputs *is* the epistemic uncertainty, and it gets
   learned from single labels because the shared $z$ is what the data constrains.
+# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a tldr, every
+# axis scored and answered, and at least one plus and one minus — journal.is_finished.
+confidence:
+review:
+  # Why: What problem is being solved, why is it hard, and is it worth solving?
+  why:
+    score:        # 1–4
+    answer:
+    plus:
+      -
+    minus:
+      -
+  # Idea: Is the solution principled — built from first principles with the right tools, rather than ad hoc?
+  idea:
+    score:        # 1–4
+    answer:
+    plus:
+      -
+    minus:
+      -
+  # Contribution: What does it add that wasn't known or possible before — the result, and the insight behind it?
+  contribution:
+    score:        # 1–4
+    answer:
+    plus:
+      -
+    minus:
+      -
+  # Rigour: Can every claim be traced to the evidence for it — and does that evidence hold?
+  rigour:
+    score:        # 1–4
+    claims:
+      - claim:
+        evidence:
+        holds:        # yes | partly | no | unverified
+    plus:
+      -
+    minus:
+      -
+  # Scope: When does the contribution actually apply — what does it assume, stated and unstated?
+  scope:
+    score:        # 1–4
+    assumptions:
+      - assumption:
+        stated:        # yes | no
+        implications:
+    plus:
+      -
+    minus:
+      -
+  # Clarity: Is it one simple narrative — a well-motivated problem, leading to minimal experiments and an easily interpretable result?
+  clarity:
+    score:        # 1–4
+    answer:
+    plus:
+      -
+    minus:
+      -
+takeaways:
+  -
 notebooks:
   - file: epistemic_nn_from_coins.py
     what: >
@@ -32,45 +91,3 @@ notebooks:
 related:
   - bfn
 ---
-
-## Review
-
-_Under review — I haven't written the verdict yet._
-
-## Problem
-
-Eqns 1 & 2 define a **joint** distribution over the outputs $\{y_1,\dots,y_\tau\}$ of $\tau$
-inputs. Why a joint at all — and since we only ever observe single labels, how is that joint
-ever *learned*?
-
-The load-bearing identity:
-
-$$\underbrace{\mathrm{Cov}(y_i,y_j)}_{\text{joint correlation}} = \underbrace{\mathrm{Var}_{\text{posterior}}(\theta)}_{\text{epistemic uncertainty}}$$
-
-The two notebooks are independent routes to the same construction — start with whichever prior
-you find more familiar.
-
-## Overview
-
-### What I took away
-
-- Marginals are not enough, and that's the entire motivation. Three models can agree on every
-  marginal and disagree completely about what they *don't know* — the disagreement is only
-  visible in the joint.
-- Aleatoric noise is **independent** across inputs; epistemic uncertainty is **shared**. That
-  asymmetry is the whole diagnostic, and it's why a joint over $\tau \geq 2$ inputs recovers
-  something a single marginal cannot.
-- Training on single labels still shapes the joint, because every label constrains the shared
-  $z$-indexed function. The joint structure emerges: collapsed where there is data, correlated
-  where there is not.
-- The epinet is a cost story, not a conceptual one — rungs 8–11 work with $K$ full networks;
-  rungs 12–15 get the same behaviour from one base pass plus a small $z$-conditioned head.
-
-## Additional thoughts
-
-### Open questions
-
-- [ ] How well does the epinet's prior term $\sigma^P = z \cdot h(x)$ scale when the input is
-      high-dimensional — do frozen random functions of the raw input still give useful diversity?
-- [ ] Ensemble vs epinet: at what point does the shared-body approximation visibly cost joint
-      quality?

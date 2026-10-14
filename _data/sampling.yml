@@ -1,0 +1,102 @@
+# How `python scripts/next_paper.py` biases the draw. INTERNAL — nothing on the site reads it.
+#
+# Every paper in _data/queue.yml gets a weight and one is drawn in proportion to it, so
+# nothing is ever unreachable — a 2018 paper you forgot about can still come up, just rarely.
+#
+#   weight = interest x recency x strike_penalty^strikes x boosts x the entry's own `weight`
+#
+# Run `python scripts/next_paper.py --explain` to see the arithmetic for a real draw.
+
+# --- recency ------------------------------------------------------------------------------
+# Halve the weight for every `halflife_days` since the paper was last written down. 540 days
+# means something noted this month is worth ~2.5x something from two years ago — a thumb on
+# the scale, not a cliff. `floor` is the smallest the recency factor can get, so the back of
+# the queue never becomes unreachable.
+halflife_days: 540
+floor: 0.05
+
+# --- strikes ------------------------------------------------------------------------------
+# What a skip costs. Multiplied in once per strike, so one strike leaves a paper at a third
+# of its weight; at `max_strikes` it leaves the queue for good.
+strike_penalty: 0.35
+max_strikes: 2
+
+# --- boosts -------------------------------------------------------------------------------
+boost:
+  # It was on the hand-picked backlog, which is the strongest signal in the file: you wrote
+  # it down deliberately rather than saving it off a feed.
+  curated: 3.0
+  # It carried a ★ in Zotero, or you promoted it by hand. The Zotero stars are an older
+  # signal — they all date from 2016-2020.
+  starred: 1.8
+  # There is no `flagged` entry, because it is derived rather than chosen. A starred Scholar
+  # alert holding k papers spreads its star over all of them, so the boost above 1.0 is
+  # divided by k:
+  #
+  #     flagged weight = 1 + (starred - 1) / siblings
+  #
+  # k=1 is handled at import time — an alert with one paper in it is unambiguous, so that
+  # paper is simply `starred: true` and gets the full 1.8. k=2 gets 1.40, k=4 gets 1.20,
+  # k=8 gets 1.10. Raise `starred` and every one of these moves with it.
+  # A folder already exists under _papers/ and the review isn't finished. Finishing one of
+  # these is worth more than starting something new.
+  in_progress: 2.5
+  # Nothing is known about the subject, because no topic tag could be guessed from the
+  # title. Usually means the entry is thin, so it waits.
+  untagged: 0.6
+
+# --- where it came from -------------------------------------------------------------------
+# A multiplier per source, for when one of them floods the draw. All neutral: this is a dial,
+# not a correction, and the numbers below say what it is currently worth leaving alone.
+#
+# As of the Scholar import, the draw splits roughly:
+#   scholar 62%  (10672 papers)   backlog 17% (64)   zotero 17% (2301)
+#   papers   3%  (22)             keep     2% (100)
+#
+# Scholar alerts are mostly "a new paper by someone I follow", which is a weaker signal than
+# a paper you wrote down on purpose; two thirds of them carry no guessable topic tag either,
+# so they are already damped by `boost.untagged`. Set `scholar: 0.4` if the draw still feels
+# like a feed rather than a reading list.
+source_interest:
+  papers: 1.0
+  backlog: 1.0
+  keep: 1.0
+  scholar: 1.0
+  zotero: 1.0
+
+# --- interest -----------------------------------------------------------------------------
+# A multiplier per tag; an entry takes the largest one its tags earn. These were seeded from
+# the tags on the papers already in _papers/ — i.e. from what you have actually chosen to
+# read — and then flattened where a tag is really a catch-all (`deep-learning` matches a
+# third of the queue, so leaning on it would bias towards nothing in particular).
+#
+# This is the dial to turn when the draw keeps offering you the wrong thing. Tags are the
+# slugs in _data/tags.yml; anything not listed here counts as 1.0.
+tag_interest:
+  # what you read most
+  rl: 3.0
+  uncertainty: 3.0
+  probabilistic-methods: 2.5
+  # the archetypes, which only ever come from your own curated entries
+  hidden-equivalence: 3.0
+  reconception: 2.5
+  shouldnt-happen: 2.5
+  clarity-essay: 2.0
+  # steady interests
+  generative-models: 2.0
+  flow-matching: 2.0
+  bandits: 2.0
+  neuroscience: 1.8
+  economics: 1.5
+  memory: 1.5
+  information-theory: 1.5
+  fundamental-ml: 1.5
+  interpretability: 1.2
+  # present in the journal, but not what you go looking for
+  optimisation: 1.0
+  numerical-methods: 1.0
+  fundamental-stats: 1.0
+  discrete-data: 1.0
+  quantum-chemistry: 0.8
+  # a catch-all tag rather than a subject
+  deep-learning: 0.8

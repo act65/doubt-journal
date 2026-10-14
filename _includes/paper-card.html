@@ -5,14 +5,7 @@
 {% endcomment %}
 {% assign p = include.paper %}
 {% assign depth = site.data.gamify.depth[p.depth] %}
-{% assign threshold = site.data.gamify.accept_threshold %}
-{% if p.rating == nil %}
-  {% assign verdict = "under-review" %}
-{% elsif p.rating >= threshold %}
-  {% assign verdict = "accepted" %}
-{% else %}
-  {% assign verdict = "rejected" %}
-{% endif %}
+{% assign verdict = site.data.stats.reviews[p.slug].status | default: "under-review" %}
 <li class="paper-card"
     data-tags="{{ p.tags | join: ' ' }}"
     data-depth="{{ p.depth }}"
@@ -27,6 +20,7 @@
     {% if depth %} · <span class="depth depth-{{ p.depth }}">{{ depth.label }}</span>{% endif %}
     {% if p.notebooks %} · {{ p.notebooks | size }} notebook{% if p.notebooks.size != 1 %}s{% endif %}{% endif %}
   </div>
+  {% include paper-badges.html slug=p.slug %}
   {% if p.question %}<div class="paper-card-question">{{ p.question }}</div>{% endif %}
   {% if p.tags and p.tags != empty %}{% include tag-list.html tags=p.tags %}{% endif %}
 </li>

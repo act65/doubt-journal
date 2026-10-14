@@ -1,0 +1,12 @@
+# The optional pages beside a review, in reading order. `_papers/<slug>/<key>.md` is served at
+# /papers/<slug>/<key>/ and linked from the review only if the file exists. Shared by the paper
+# layouts, scripts/score.py and scripts/new_paper.py. The rubric itself is _data/rubric.yml.
+- key: tutorial
+  label: Tutorial
+  blurb: The extended summary — the problem, the setting, and the construction in my own words.
+- key: discussion
+  label: Discussion
+  blurb: The long-form argument behind the verdict, and feedback for the authors.
+- key: thoughts
+  label: Additional thoughts
+  blurb: My ideas, not theirs — extensions, connections and open questions.

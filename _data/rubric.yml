@@ -1,0 +1,96 @@
+# The review rubric: the axes every review is scored on. Yours to edit — reword the questions,
+# change the columns, or write the ideal-contribution paragraph below. Shared by the paper
+# layout, the /rubric/ page, scripts/score.py and scripts/new_paper.py.
+#
+# The axes are meant to be orthogonal — each asks about one thing, so a paper can score high on
+# one and low on another without that being a contradiction:
+#
+#   why           the problem    — not the solution
+#   idea          the solution   — how principled it is, not how much it adds or whether it's proven
+#   contribution  the delta      — what it adds to what was known, not how it was built
+#   rigour        the evidence   — claims against what supports them
+#   scope         the conditions — when the contribution applies at all
+#   clarity       the chain      — whether why, idea and evidence form one simple narrative
+#
+# Every axis is about the paper, not the reader: what it gave *you* goes in `takeaways`.
+#
+# A paper's front matter has `review: {<axis key>: {score, answer, plus, minus}}`. An axis with
+# a `table` swaps `answer` for rows: `review.rigour.claims: [{claim, evidence, holds}, ...]`.
+# Renaming a key orphans what's already written under the old one, so rename those too.
+
+# What the ideal paper looks like — the standard the axes are measuring against. Shown on
+# /rubric/. Copied verbatim from §0 of ~/Documents/dual-geom/papers/WRITING-HEURISTICS.md.
+ideal: >
+  A good paper is **well organised**, **clearly motivated**, **backs up all claims with
+  evidence**, is **easy to follow** (small logical steps, with worked examples/demos where
+  needed), and **focuses on the core narrative** — while capturing all limitations, caveats and
+  side-quests in appendices or off-the-main-path sections.
+
+# Each axis is scored 1–4. No middle: every score is a decision.
+scale:
+  min: 1
+  max: 4
+  labels: {1: poor, 2: weak, 3: good, 4: excellent}
+
+# The rating is computed, never written: the mean of the axis scores, rescaled to 0–10 —
+# (mean - 1) / 3 * 10, to one decimal. A score of 1 on any axis caps it at `floor_cap`, so one
+# fatal flaw can't be outvoted by the rest. Accepted/rejected is `accept_threshold` in
+# gamify.yml.
+rating:
+  label: Rating
+  max: 10
+  floor_cap: 4
+
+# Not part of the rating: how far to trust it.
+confidence:
+  label: Confidence
+  max: 5
+  blurb: How sure I am of these scores. Not the same as depth — effort isn't certainty.
+
+axes:
+  - key: why
+    label: Why
+    ask: What problem is being solved, why is it hard, and is it worth solving?
+    blurb: The problem, not the solution — is it real, clearly posed, and not already solved?
+
+  - key: idea
+    label: Idea
+    ask: Is the solution principled — built from first principles with the right tools, rather than ad hoc?
+    blurb: Elegance and motivation. Does each piece follow from the problem, or was it bolted on until it worked?
+
+  - key: contribution
+    label: Contribution
+    ask: What does it add that wasn't known or possible before — the result, and the insight behind it?
+    blurb: The precise delta to prior work, not the effort spent. A small clean result can score high; a big one that was already known can't.
+
+  - key: rigour
+    label: Rigour
+    ask: Can every claim be traced to the evidence for it — and does that evidence hold?
+    blurb: One row per claim. An empty evidence cell is a finding.
+    table:
+      key: claims
+      columns:
+        - {key: claim, label: Claim}
+        - {key: evidence, label: Evidence, blurb: "Where it's supported — Thm 2, Fig 3, §4.1"}
+        - {key: holds, label: "Holds?", values: ["yes", "partly", "no", "unverified"]}
+      required: [claim, holds]
+
+  - key: scope
+    label: Scope
+    ask: When does the contribution actually apply — what does it assume, stated and unstated?
+    blurb: One row per assumption. Its implications are what tell you where the paper stops.
+    table:
+      key: assumptions
+      columns:
+        - {key: assumption, label: Assumption}
+        - {key: stated, label: "Stated?", values: ["yes", "no"]}
+        - {key: implications, label: Implications, blurb: "What it costs, or what breaks without it"}
+      required: [assumption, stated]
+
+  - key: clarity
+    label: Clarity
+    ask: Is it one simple narrative — a well-motivated problem, leading to minimal experiments and an easily interpretable result?
+    blurb: >
+      The chain, not its links. Is every experiment and object there because the narrative needs
+      it, with the complexity isolated and moved off the main path? The test: could you
+      reproduce the argument from what's on the page?
