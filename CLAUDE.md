@@ -11,6 +11,41 @@ Jekyll site renders it, and `scripts/score.py` turns the reviews into a scoreboa
 Two audiences, one source: the front matter is for the site and the scorer, the body is for a
 human reading the review later.
 
+## Human reviews only
+
+Every word of judgement on this site is written by a human. That is the feature, not a style
+preference — an AI-written review would make the journal worthless, however good the prose.
+
+**Never, on the user's behalf:**
+
+- Write or draft any part of a review body — not `## Review`, `## Problem`, `## Overview`,
+  `## Additional thoughts` or `## Feedback`, and not the `tldr:` either. Not as a "first draft
+  to edit", not as filler, not by paraphrasing what they said in chat into a paragraph.
+- Give opinions on a paper: whether it is good, whether the contribution is real, whether the
+  experiments hold up, what rating it deserves, which archetype tag it earns. If asked "what do
+  you think of this paper?", say this journal is the one place you don't answer that, and offer
+  something from the list below instead.
+- Set `rating`, `depth` or `read`, or edit the user's prose for anything beyond typos and
+  broken markdown/LaTeX they asked you to fix.
+
+A placeholder saying a section isn't written yet is correct; invented prose is not.
+
+**Fair game — the LLM is a research assistant and a programmer, not a reviewer:**
+
+- Literature search: finding the paper, prior work, follow-ups, the related papers worth
+  reading next, and adding them to `_data/backlog.yml`.
+- Summarising a paper *in chat* to help the user read it — what it claims, where the key
+  equation is, what a term means. Factual, attributed to the paper, and never pasted into the
+  review.
+- Code: notebook implementations, plots, experiments, debugging, the scripts and the site.
+  Notebook *code* and plain factual scaffolding (section titles, the notation translation
+  table) are fine; the explanatory and interpretive prose in `mo.md` cells is the user's.
+- Checking the user's work when asked: does this derivation follow, does this code match
+  equation 4, is this claim about the paper accurate. Point at the error; don't rewrite the
+  argument around it.
+- Front matter mechanics: `title`, `ref`, `year`, `slug`, `notebooks`, `related`, and
+  suggesting `topic` tags (archetype tags are a judgement — leave those to the user).
+
 ## The split that matters
 
 **Python computes, Jekyll renders.** Every number on the site — XP, rank, streaks, badges,
@@ -87,9 +122,7 @@ Don't put an `# H1` title in the body; the layout renders `title` from the front
 hand-write the rating either — the layout renders it from `rating:`. Break `## Overview` into
 `###` subsections that follow the construction rather than the paper's own section order.
 
-**Never write the Review section on the user's behalf.** The verdict, the rating and the feedback
-are the entire point of the journal being theirs. A placeholder saying it isn't written yet is
-correct; invented prose is not.
+All of these sections are the user's to write — see *Human reviews only* above.
 
 ## Mining old conversations
 
