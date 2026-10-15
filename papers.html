@@ -5,8 +5,12 @@ permalink: /papers/
 ---
 
 {% assign stats = site.data.stats %}
-{% comment %} Part pages (tutorial, discussion, …) are in the collection too; list reviews only. {% endcomment %}
-{% assign papers = site.papers | where_exp: "p", "p.part == nil" | sort: "read" | reverse %}
+{% comment %}
+  Finished reviews only — a review under review isn't listed anywhere, though its page exists.
+  stats.listed is the slugs, best rated first; part pages (tutorial, …) never appear in it.
+{% endcomment %}
+{% assign papers = "" | split: "" %}
+{% for slug in stats.listed %}{% assign p = site.papers | where: "slug", slug | where_exp: "d", "d.part == nil" | first %}{% if p %}{% assign papers = papers | push: p %}{% endif %}{% endfor %}
 
 <div id="papers">
 
@@ -17,10 +21,9 @@ permalink: /papers/
     <input type="search" id="paper-search" placeholder="search title, author, year&hellip;" autocomplete="off">
 
     <div class="filter-row">
-      <span class="filter-label">verdict</span>
-      <button class="verdict verdict-accepted" data-verdict="accepted">Accepted <span class="count">{{ stats.accepted }}</span></button>
-      <button class="verdict verdict-rejected" data-verdict="rejected">Rejected <span class="count">{{ stats.rejected }}</span></button>
-      <button class="verdict verdict-pending" data-verdict="under-review">Under review <span class="count">{{ stats.under_review }}</span></button>
+      <span class="filter-label">sort</span>
+      <button class="sort active" data-sort="desc">Rating, high to low</button>
+      <button class="sort" data-sort="asc">Rating, low to high</button>
     </div>
 
     {% assign kinds = "topic,archetype,meta,other" | split: "," %}
@@ -37,24 +40,26 @@ permalink: /papers/
     {% endfor %}
 
     <div class="filter-row">
-      <span class="filter-label">depth</span>
-      {% for d in stats.by_depth %}
-        {% if d.count > 0 %}
-          <button class="depth depth-{{ d.slug }}" data-depth="{{ d.slug }}">{{ d.label }} <span class="count">{{ d.count }}</span></button>
-        {% endif %}
-      {% endfor %}
+      {% if site.scoreboard %}
+        <span class="filter-label">depth</span>
+        {% for d in stats.by_depth %}
+          {% if d.count > 0 %}
+            <button class="depth depth-{{ d.slug }}" data-depth="{{ d.slug }}">{{ d.label }} <span class="count">{{ d.count }}</span></button>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
       <button class="clear" id="clear-filters">clear</button>
     </div>
 
     <p class="note" id="filter-count"></p>
   </div>
 
-  <ul class="posts papers" id="paper-list">
+  <ul class="papers" id="paper-list">
     {% for p in papers %}{% include paper-card.html paper=p %}{% endfor %}
   </ul>
 
   {% if papers.size == 0 %}
-    <p class="note">Nothing here yet. <code>python scripts/new_paper.py &lt;slug&gt;</code>.</p>
+    <p class="note">No finished reviews yet.</p>
   {% endif %}
 
 </div>
@@ -69,10 +74,22 @@ permalink: /papers/
   var search = document.getElementById('paper-search');
   var counter = document.getElementById('filter-count');
 
-  // Tags narrow (AND) so you can ask for "RL AND hidden equivalence". The others widen (OR),
-  // because a paper has exactly one depth and one verdict — ANDing them would select nothing.
+  // Tags narrow (AND) so you can ask for "RL AND hidden equivalence". Depth widens (OR),
+  // because a paper has exactly one — ANDing them would select nothing.
   var activeTags = [];
-  var or = { depth: [], verdict: [] };
+  var or = { depth: [] };
+  var order = 'desc';  // the list arrives best rated first (stats.listed)
+
+  function sort() {
+    var sign = order === 'asc' ? 1 : -1;
+    cards.slice().sort(function (a, b) {
+      return sign * (parseFloat(a.dataset.rating) - parseFloat(b.dataset.rating)) ||
+        cards.indexOf(a) - cards.indexOf(b);
+    }).forEach(function (card) { list.appendChild(card); });
+    document.querySelectorAll('[data-sort]').forEach(function (b) {
+      b.classList.toggle('active', b.dataset.sort === order);
+    });
+  }
 
   function apply() {
     var query = (search.value || '').trim().toLowerCase();
@@ -99,6 +116,7 @@ permalink: /papers/
       if (or[key].length) params.push(key + '=' + or[key].join(','));
     });
     if (query) params.push('q=' + encodeURIComponent(query));
+    if (order !== 'desc') params.push('sort=' + order);
     history.replaceState(null, '', params.length ? '?' + params.join('&') : location.pathname);
   }
 
@@ -119,16 +137,21 @@ permalink: /papers/
     });
   });
   search.addEventListener('input', apply);
+  document.querySelectorAll('[data-sort]').forEach(function (b) {
+    b.addEventListener('click', function () { order = b.dataset.sort; sort(); apply(); });
+  });
 
   document.getElementById('clear-filters').addEventListener('click', function () {
     activeTags = [];
     Object.keys(or).forEach(function (key) { or[key] = []; });
     search.value = '';
     document.querySelectorAll('.filters .active').forEach(function (b) { b.classList.remove('active'); });
+    order = 'desc';
+    sort();
     apply();
   });
 
-  // Deep links: /papers/?verdict=rejected&tags=rl&q=bandit
+  // Deep links: /papers/?sort=asc&tags=rl&q=bandit
   var params = new URLSearchParams(location.search);
   function preset(param, store, key) {
     (params.get(param) || '').split(',').filter(Boolean).forEach(function (value) {
@@ -139,6 +162,8 @@ permalink: /papers/
   preset('tags', activeTags, 'tag');
   Object.keys(or).forEach(function (key) { preset(key, or[key], key); });
   if (params.get('q')) search.value = params.get('q');
+  if (params.get('sort') === 'asc') order = 'asc';
+  sort();
   apply();
 })();
 </script>

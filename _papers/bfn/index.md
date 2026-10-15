@@ -11,11 +11,11 @@ read: 2026-07-27
 depth: rebuilt
 tags: [probabilistic-methods, generative-models, discrete-data, reconception]
 question: What is actually fed to the network, and what comes out?
-tldr: >
+summary: >
   Keep a belief about the clean data — a posterior built from noisy observations under a naive
   prior — and a network that corrects that naive posterior into a smart estimate using the true
   data prior. Generation bootstraps: guess, observe your own guess, update the belief, repeat.
-# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a tldr, every
+# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a summary, every
 # axis scored and answered, and at least one plus and one minus — journal.is_finished.
 confidence:
 review:

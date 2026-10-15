@@ -1,14 +1,14 @@
 # Scoring rules. Everything on /stats/ is derived from this file plus the papers themselves —
 # nothing is hand-maintained, so the only way to move a number is to actually read something.
 
-# How much a paper is worth, by how hard you actually looked at it. One read is the unit: the
-# gap between `read` and `rebuilt` is the whole point, since reading twenty papers should not
-# outscore rebuilding two. There is no credit for skimming — if you only read the abstract and
+# How much a paper is worth, by how hard you actually looked at it. One review is the unit: the
+# gap between `reviewed` and `rebuilt` is the whole point, since reviewing twenty papers should
+# not outscore rebuilding two. There is no credit for skimming — if you only read the abstract and
 # the figures, it doesn't go in the journal.
 depth:
-  read:
+  reviewed:
     xp: 1
-    label: Read
+    label: Reviewed
     blurb: Read it properly, start to finish. Could summarise the argument.
   rebuilt:
     xp: 3
@@ -19,7 +19,7 @@ depth:
     label: Extended
     blurb: Went past the paper — a new experiment, a case it gets wrong, a generalisation.
 
-# Reviewer ranks, in ascending order of unearned authority. Denominated in XP, so with read = 1
+# Reviewer ranks, in ascending order of unearned authority. Denominated in XP, so with reviewed = 1
 # these read as "papers-equivalent": Reviewer 2 is ten decent reads, or three rebuilds.
 ranks:
   - { at: 0,   name: Desk Clerk }
@@ -41,9 +41,9 @@ idle_penalty:
   since: 2026-10-14
   xp: 1
 
-# A paper counts as accepted at or above this rating; below it, rejected. No rating at all
-# means the review is still under review.
-accept_threshold: 5
+# There is no accepted/rejected — the rating is the verdict. A rating below this counts as low,
+# for the Hidden Gem paper badge, and nothing else.
+low_rating: 7.5
 
 # Accepting a paper from the reading queue starts a clock. `scripts/next_paper.py` writes a
 # due date `days` ahead into _data/queue.yml, and from then on the review owes you a verdict:

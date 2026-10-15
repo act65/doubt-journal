@@ -103,17 +103,17 @@ def tag_meta(slug: str, tags_cfg: dict) -> dict:
 
 def score(papers, gamify, tags_cfg, rubric, queue, today: dt.date) -> dict:
     depth_cfg = gamify.get("depth") or {}
-    threshold = gamify.get("accept_threshold", 5)
+    # There is no accepted/rejected: the rating is the verdict. `low_rating` only says what
+    # counts as low for Hidden Gem.
+    low = gamify.get("low_rating", 5)
 
     def xp_of(paper) -> int:
         return int((depth_cfg.get(paper.get("depth")) or {}).get("xp", 0))
 
     def status_of(paper) -> str:
-        # Scores with no reasons behind them are still under review — the verdict waits for the
+        # Scores with no reasons behind them are still under review — the rating waits for the
         # whole core (journal.missing_core), the same rule the queue and the deadlines use.
-        if not is_finished(paper, rubric):
-            return "under-review"
-        return "accepted" if paper["rating"] >= threshold else "rejected"
+        return "reviewed" if is_finished(paper, rubric) else "under-review"
 
     earned_xp = sum(xp_of(p) for p in papers)
     read_weeks = {iso_week(p["read_date"]) for p in papers if p["read_date"]}
@@ -158,7 +158,8 @@ def score(papers, gamify, tags_cfg, rubric, queue, today: dt.date) -> dict:
             }
         )
 
-    tag_counts = Counter(t for p in papers for t in p["tags"])
+    # Only finished reviews are listed on the site, so only they are counted.
+    tag_counts = Counter(t for p in papers if status_of(p) == "reviewed" for t in p["tags"])
     by_tag = sorted(
         ({**tag_meta(slug, tags_cfg), "count": n} for slug, n in tag_counts.items()),
         key=lambda t: (-t["count"], t["slug"]),
@@ -171,7 +172,7 @@ def score(papers, gamify, tags_cfg, rubric, queue, today: dt.date) -> dict:
     ratings = [
         {"rating": r, "count": n}
         # Computed ratings have a decimal; the histogram buckets them to whole points.
-        for r, n in sorted(Counter(round(p["rating"]) for p in papers if p.get("rating") is not None).items())
+        for r, n in sorted(Counter(round(p["rating"]) for p in papers if status_of(p) == "reviewed").items())
     ]
 
     # ---- streaks, measured in ISO weeks with at least one paper finished
@@ -246,7 +247,7 @@ def score(papers, gamify, tags_cfg, rubric, queue, today: dt.date) -> dict:
         p["slug"]: {
             "status": status_of(p),
             "rating": p["rating"],
-            "badges": [b["key"] for b in paper_badges(p, rubric, threshold, status_of(p))],
+            "badges": [b["key"] for b in paper_badges(p, rubric, low, status_of(p))],
             "missing": missing_core(p, rubric),
             "parts": p["parts"],
         }
@@ -260,9 +261,11 @@ def score(papers, gamify, tags_cfg, rubric, queue, today: dt.date) -> dict:
         "idle": idle,
         "rank": {"name": current.get("name"), "at": current.get("at", 0)},
         "next_rank": next_rank,
-        "accepted": statuses["accepted"],
-        "rejected": statuses["rejected"],
+        "reviewed": statuses["reviewed"],
         "under_review": statuses["under-review"],
+        # The finished reviews, rating first: what /papers/ and the tag pages list.
+        "listed": [p["slug"] for p in sorted(
+            (p for p in papers if status_of(p) == "reviewed"), key=lambda p: (-p["rating"], p["slug"]))],
         "by_depth": by_depth,
         "by_tag": by_tag,
         "by_year": by_year,
@@ -272,13 +275,14 @@ def score(papers, gamify, tags_cfg, rubric, queue, today: dt.date) -> dict:
         "queue": queue_stats,
         "due": due,
         "reviews": reviews,
-        # The catalogue, each with the papers that earned it — for the scoreboard page.
+        # The catalogue, each with the papers that earned it — for /badges/.
         "paper_badges": [
-            {**badge, "papers": [slug for slug, r in reviews.items() if badge["key"] in r["badges"]]}
+            {**badge, "blurb": badge["blurb"].format(low=low),
+             "papers": [slug for slug, r in reviews.items() if badge["key"] in r["badges"]]}
             for badge in PAPER_BADGES
         ],
     }
-    stats["badges"] = award(papers, stats, gamify, tags_cfg, xp_of, status_of)
+    stats["badges"] = award(papers, stats, gamify, tags_cfg, xp_of, status_of, low)
     return stats
 
 
@@ -381,7 +385,8 @@ PAPER_BADGES = [
      "blurb": "Rated 8 or more, with a 4 for clarity."},
     {"key": "airtight", "name": "Airtight", "blurb": "A 4 for rigour, and every claim holds."},
     {"key": "solid", "name": "Solid Citizen", "blurb": "A 3 on every axis. No drama."},
-    {"key": "hidden-gem", "name": "Hidden Gem", "blurb": "Rejected — but a 4 for contribution."},
+    {"key": "hidden-gem", "name": "Hidden Gem",
+     "blurb": "Rated under {low} — but a 4 for contribution."},
     {"key": "diamond-rough", "name": "Diamond in the Rough",
      "blurb": "A 4 for contribution, 2 or less for clarity."},
     {"key": "well-told", "name": "Well Told, Little Said",
@@ -405,7 +410,7 @@ PAPER_BADGES = [
 ]
 
 
-def paper_badges(paper, rubric, threshold, status) -> list[dict]:
+def paper_badges(paper, rubric, low, status) -> list[dict]:
     """The PAPER_BADGES a finished review has earned. Unfinished reviews earn nothing — a badge
     on half-scored axes would be a verdict before there is one."""
     if status == "under-review":
@@ -432,7 +437,7 @@ def paper_badges(paper, rubric, threshold, status) -> list[dict]:
         "required-reading": rating is not None and rating >= 8 and axis("clarity") == hi,
         "airtight": axis("rigour") == hi and holds and all(h == "yes" for h in holds),
         "solid": values and all(v == 3 for v in values),
-        "hidden-gem": status == "rejected" and axis("contribution") == hi,
+        "hidden-gem": rating is not None and rating < low and axis("contribution") == hi,
         "diamond-rough": axis("contribution") == hi and (axis("clarity") or hi) <= 2,
         "well-told": axis("clarity") == hi and (axis("contribution") or hi) <= 2,
         "jekyll-hyde": hi in values and lo in values,
@@ -449,7 +454,7 @@ def paper_badges(paper, rubric, threshold, status) -> list[dict]:
     return [b for b in PAPER_BADGES if rules.get(b["key"])]
 
 
-def award(papers, stats, gamify, tags_cfg, xp_of, status_of) -> list[dict]:
+def award(papers, stats, gamify, tags_cfg, xp_of, status_of, low) -> list[dict]:
     """Rule-based badges. Each returns (earned, detail) where detail shows progress."""
     depth_cfg = gamify.get("depth") or {}
     deep = [p for p in papers if p.get("depth") in ("rebuilt", "extended")]
@@ -499,7 +504,6 @@ def award(papers, stats, gamify, tags_cfg, xp_of, status_of) -> list[dict]:
         badge("Marathon", "A four-week reading streak.", stats["streak"]["best"], 4, " weeks"),
         badge("Iron Reader", "A twelve-week reading streak.", stats["streak"]["best"], 12, " weeks"),
         badge("Polymath", "Papers spanning eight different topics.", len(topics), 8),
-        badge("Desk Rejector", "Reject five papers.", stats["rejected"], 5),
         badge("Nitpicker", "Write a 1500-word review.", longest, 1500, " words"),
         badge("Connected", "Link one paper to three others.", most_related, 3),
         badge("Completionist", "Read a tag dry — nothing left in the queue.", len(swept), 1),
@@ -651,8 +655,7 @@ def summarise(stats: dict) -> str:
         f"  {year['read']}/{year['target']} in {year['value']} "
         f"({abs(year['ahead_by'])} {pace})",
         f"  streak {weeks} week{'' if weeks == 1 else 's'} (best {stats['streak']['best']})",
-        f"  accepted {stats['accepted']} · rejected {stats['rejected']} "
-        f"· under review {stats['under_review']}",
+        f"  reviewed {stats['reviewed']} · under review {stats['under_review']}",
         f"  queue {stats['queue']['open']} open "
         f"({stats['queue']['curated_open']} curated, {stats['queue']['in_progress']} half-written)",
     ]

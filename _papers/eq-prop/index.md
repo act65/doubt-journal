@@ -9,14 +9,14 @@ ref: http://journal.frontiersin.org/article/10.3389/fncom.2017.00024/abstract
 permalink: /papers/eq-prop/
 # Migrated from _drafts/2024-08-01-eq-prop.md; `read` is that draft's filename date.
 read: 2024-08-01
-depth: read
+depth: reviewed
 # Your hand rating from before the rubric. Nothing reads it — the rating is now
 # computed from the axis scores. Kept so you can compare; delete it whenever.
 rating_before_rubric: 9
 tags: [neuroscience, deep-learning, optimisation, hidden-equivalence]
 question:
-tldr:
-# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a tldr, every
+summary:
+# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a summary, every
 # axis scored and answered, and at least one plus and one minus — journal.is_finished.
 confidence:
 review:

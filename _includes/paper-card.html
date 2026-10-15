@@ -5,20 +5,20 @@
 {% endcomment %}
 {% assign p = include.paper %}
 {% assign depth = site.data.gamify.depth[p.depth] %}
-{% assign verdict = site.data.stats.reviews[p.slug].status | default: "under-review" %}
+{% assign rating = site.data.stats.reviews[p.slug].rating %}
 <li class="paper-card"
     data-tags="{{ p.tags | join: ' ' }}"
     data-depth="{{ p.depth }}"
-    data-verdict="{{ verdict }}"
+    data-rating="{{ rating }}"
     data-text="{{ p.title | append: ' ' | append: p.authors | append: ' ' | append: p.year | append: ' ' | append: p.question | downcase | strip_newlines | escape }}">
   <div class="paper-card-head">
     <a class="paper-card-title" href="{{ p.url | relative_url }}">{{ p.title }}</a>
-    {% include verdict.html paper=p %}
+    {% include rating.html paper=p %}
   </div>
   <div class="paper-card-meta">
     {{ p.authors }}{% if p.year %} · {{ p.year }}{% endif %}
-    {% if depth %} · <span class="depth depth-{{ p.depth }}">{{ depth.label }}</span>{% endif %}
-    {% if p.notebooks %} · {{ p.notebooks | size }} notebook{% if p.notebooks.size != 1 %}s{% endif %}{% endif %}
+    {% if depth and site.scoreboard %} · <span class="depth depth-{{ p.depth }}">{{ depth.label }}</span>{% endif %}
+    {% if p.notebooks.size > 0 %} · {{ p.notebooks | size }} notebook{% if p.notebooks.size != 1 %}s{% endif %}{% endif %}
   </div>
   {% include paper-badges.html slug=p.slug %}
   {% if p.question %}<div class="paper-card-question">{{ p.question }}</div>{% endif %}

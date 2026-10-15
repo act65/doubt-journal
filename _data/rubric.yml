@@ -34,8 +34,8 @@ scale:
 
 # The rating is computed, never written: the mean of the axis scores, rescaled to 0–10 —
 # (mean - 1) / 3 * 10, to one decimal. A score of 1 on any axis caps it at `floor_cap`, so one
-# fatal flaw can't be outvoted by the rest. Accepted/rejected is `accept_threshold` in
-# gamify.yml.
+# fatal flaw can't be outvoted by the rest. There is no accepted/rejected; the rating is the
+# verdict.
 rating:
   label: Rating
   max: 10

@@ -3,7 +3,7 @@ layout: default
 ---
 
 {% comment %}
-  The minimal review: tldr, scores, then one block per rubric axis (_data/rubric.yml), then
+  The minimal review: summary, scores, then one block per rubric axis (_data/rubric.yml), then
   takeaways — the order you read a review in, not the order you write one. Everything longer
   lives on the part pages in _data/parts.yml and is linked at the bottom. The rating is computed
   by scripts/score.py and read from stats; nothing here does arithmetic.
@@ -24,12 +24,15 @@ layout: default
   </div>
 
   <div class="paper-badges">
-    {% include verdict.html paper=page %}
-    {% if depth %}
-      <span class="depth depth-{{ page.depth }}" title="{{ depth.blurb }}">{{ depth.label }}</span>
-      <span class="xp">+{{ depth.xp }} XP</span>
+    {% include rating.html paper=page %}
+    {% comment %} depth, XP and the read date are the scoreboard's, not the reader's. {% endcomment %}
+    {% if site.scoreboard %}
+      {% if depth %}
+        <span class="depth depth-{{ page.depth }}" title="{{ depth.blurb }}">{{ depth.label }}</span>
+        <span class="xp">+{{ depth.xp }} XP</span>
+      {% endif %}
+      {% if page.read %}<span class="read-on">read {{ page.read | date: "%b %Y" }}</span>{% endif %}
     {% endif %}
-    {% if page.read %}<span class="read-on">read {{ page.read | date: "%b %Y" }}</span>{% endif %}
   </div>
 
   {% capture awards %}{% include paper-badges.html slug=page.slug %}{% endcapture %}
@@ -44,8 +47,8 @@ layout: default
     <p class="paper-question"><strong>The question I was chasing.</strong> {{ page.question }}</p>
   {% endif %}
 
-  {% if page.tldr %}
-    <blockquote class="paper-tldr">{{ page.tldr | markdownify | remove: '<p>' | remove: '</p>' }}</blockquote>
+  {% if page.summary %}
+    <div class="paper-summary"><span class="paper-summary-label">Summary</span> {{ page.summary | markdownify | remove: '<p>' | remove: '</p>' }}</div>
   {% endif %}
 
   {% capture scores %}
@@ -165,7 +168,6 @@ layout: default
 
   <p class="paper-footer">
     <a href="{{ '/papers/' | relative_url }}">&laquo; all papers</a>
-    · <a href="{{ site.repo }}/blob/{{ site.branch }}/_papers/{{ page.slug }}/index.md">edit this review</a>
   </p>
 
 </div>

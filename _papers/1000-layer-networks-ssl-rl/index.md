@@ -9,13 +9,13 @@ ref: https://arxiv.org/abs/2503.14858
 permalink: /papers/1000-layer-networks-ssl-rl/
 # Approximate: first time it came up in your Claude transcripts.
 read: 2026-07-24
-depth: read
+depth: reviewed
 tags: [rl, deep-learning]
-tldr: >
+summary: >
   Scaling self-supervised learning drove breakthroughs in language and vision but not in RL.
   Scaling network depth — to 1000 layers — turns out to unlock goal-reaching behaviour that
   shallower networks never acquire.
-# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a tldr, every
+# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a summary, every
 # axis scored and answered, and at least one plus and one minus — journal.is_finished.
 confidence:
 review:

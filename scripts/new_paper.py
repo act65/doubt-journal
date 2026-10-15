@@ -118,8 +118,8 @@ def main() -> int:
     parser.add_argument("--ref", default="", help="link to the paper")
     parser.add_argument(
         "--depth",
-        default="read",
-        choices=["read", "rebuilt", "extended"],
+        default="reviewed",
+        choices=["reviewed", "rebuilt", "extended"],
         help="how carefully you read it — drives the XP (default: read)",
     )
     parser.add_argument("--tags", default="", help="comma-separated tag slugs; see _data/tags.yml")

@@ -9,19 +9,19 @@ ref: https://arxiv.org/abs/2403.04082
 permalink: /papers/inference-via-interpolation/
 # skim (1 XP) | read (3) | rebuilt (8) | extended (15) — see _data/gamify.yml
 read: 2026-08-05
-depth: read
+depth: reviewed
 tags: [rl, probabilistic-methods, hidden-equivalence]
 question: >
   Assumption 2 reads like the paper's result rather than an assumption — where does it actually
   come from, and does everything really follow from it?
-tldr: >
+summary: >
   Choose a contrastive objective whose critic is a Gaussian kernel and whose regulariser is a
   variance budget rather than a unit sphere, and the learned representations become a
   linear-Gaussian state-space model — so planning between a start and a goal collapses to linear
   interpolation in latent space.
 # Notebooks live in this folder next to the review.
 #   uv run marimo edit _papers/inference-via-interpolation/<name>.py
-# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a tldr, every
+# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a summary, every
 # axis scored and answered, and at least one plus and one minus — journal.is_finished.
 confidence:
 review:

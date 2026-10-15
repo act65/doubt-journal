@@ -10,11 +10,11 @@ ref:
 permalink: /papers/cost-of-waiting/
 # Migrated from _drafts/2025-06-14-cost-of-waiting.md; `read` is that draft's filename date.
 read: 2025-06-14
-depth: read
+depth: reviewed
 tags: [economics, uncertainty, bandits]
 question:
-tldr:
-# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a tldr, every
+summary:
+# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a summary, every
 # axis scored and answered, and at least one plus and one minus — journal.is_finished.
 confidence:
 review:

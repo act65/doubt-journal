@@ -1,0 +1,14 @@
+{% comment %}
+  A paper's rating, or "under review" until the review is finished. There is no accepted or
+  rejected: the rating is the verdict. Whether a review is finished, and its rating, are decided
+  by scripts/score.py. A paper missing from stats (a draft, served locally with --unpublished) is
+  under review.
+  Expects: include.paper.
+{% endcomment %}
+{% comment %} Not `review`: includes share scope, and paper.html already uses that name. {% endcomment %}
+{% assign rated = site.data.stats.reviews[include.paper.slug] %}
+{% if rated.status == "reviewed" %}
+  <span class="verdict verdict-rating" title="The mean of the axis scores, rescaled to 0–10.">{{ rated.rating }}<span class="of">/10</span></span>
+{% else %}
+  <span class="verdict verdict-pending">Under review</span>
+{% endif %}

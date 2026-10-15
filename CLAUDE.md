@@ -23,7 +23,7 @@ preference — an AI-written review would make the journal worthless, however go
 
 **Never, on the user's behalf:**
 
-- Write or draft any part of a review — not the `index.md` body, not `tldr`, `takeaways`, any
+- Write or draft any part of a review — not the `index.md` body, not `summary`, `takeaways`, any
   axis `answer`, `plus` or `minus`, any row of the claims or assumptions tables, and not a word
   of `tutorial.md`,
   `discussion.md` or `thoughts.md`. Not as a "first draft to edit", not as filler, not by
@@ -64,11 +64,20 @@ script, not the template.
 scripts/score.py`. `_data/queue.yml` and `_data/dropped.yml` are machine-managed but *are*
 meant to be edited by hand when needed — they are data, not output.
 
-CI reruns `score.py` itself before every build, and on a daily 00:15 UTC schedule, so the site
-is scored as of the build date. Three numbers depend on today: streaks, the idle-week XP
-penalty (`idle_penalty`) and overdue reviews (`review_deadline`), both in `_data/gamify.yml`.
-The committed `stats.yml` is a snapshot that keeps the scoreboard's history readable in the
-diff.
+**The scoreboard is private.** XP, rank, streaks, journal badges and the penalties are for the
+user only. `stats.html` carries `scoreboard: true` and `_plugins/scoreboard.rb` drops it unless
+the site config sets `scoreboard: true`, which only `_config.scoreboard.yml` does (local:
+`bundle exec jekyll serve --config _config.yml,_config.scoreboard.yml`). Anything else
+scoreboard-ish in a template goes inside `{% if site.scoreboard %}` — XP, but also a paper's
+`depth` chip and `read` date, which are about the reader rather than the paper. Public pages may
+read the per-paper parts of `stats` — status, ratings, paper badges, tag counts — never XP.
+
+CI does **not** run `score.py`; the public build reads the committed `stats.yml`. So it must be
+regenerated and committed with every review change — `.githooks/pre-commit` does that (enabled
+with `git config core.hooksPath .githooks`): when a commit touches `_papers/**/*.md`,
+`_data/*.yml` or the scorer, it reruns `score.py` and stages `stats.yml` and `tags/`. The public fields depend only on the papers;
+the date-dependent ones (streaks, `idle_penalty`, `review_deadline`) only show on the local
+scoreboard, which is current whenever `score.py` was last run.
 
 ## The pile (an experiment, not on the site)
 
@@ -116,7 +125,7 @@ is not the same as having read it and a wrong `read` date silently corrupts the 
 Required: `layout: paper`, `slug` (must equal the folder name), `title`, `permalink:
 /papers/<slug>/`, `read` (an ISO date — the streak maths needs a real `YYYY-MM-DD`), `depth`.
 
-- `depth` is one of `read` / `rebuilt` / `extended` and is what earns XP — one read is 1 XP, the
+- `depth` is one of `reviewed` / `rebuilt` / `extended` and is what earns XP — one review is 1 XP, the
   unit everything else is measured in. Set it honestly; the whole point of the scoring is that
   reading twenty papers should not outscore rebuilding two. There is no `skim`: a paper you only
   skimmed doesn't go in the journal. `rebuilt` implies there is a notebook in the folder.
@@ -124,8 +133,9 @@ Required: `layout: paper`, `slug` (must equal the folder name), `title`, `permal
   the rigour and scope axes swapping `answer` for a table (`claims`, `assumptions`). Scores are
   1–4. All the user's to write. `confidence` (1–5) sits beside it and isn't part of the rating.
 - **There is no `rating:` key.** The rating is computed by `journal.compute_rating`: the mean
-  axis score rescaled to 0–10, capped at `floor_cap` if any axis scores 1. It decides
-  accepted/rejected, and only once the review is finished. `rating_before_rubric:` in some
+  axis score rescaled to 0–10, capped at `floor_cap` if any axis scores 1. It is the verdict —
+  there is no accepted/rejected — and it only shows once the review is finished.
+  `low_rating` in `gamify.yml` is what Hidden Gem counts as low, nothing more. `rating_before_rubric:` in some
   reviews is the user's old hand rating, kept for comparison; nothing reads it.
 - `takeaways` is a list of short markdown items.
 - `tags` are slugs from `_data/tags.yml`. A tag not listed there still renders, it just falls
@@ -140,7 +150,7 @@ wrong `read` date silently corrupts the streak.
 
 A paper's permalink is the **minimal review**, and the longer writing lives on part pages
 beside it. Reading order and writing order differ on purpose: the page shows the verdict
-first, but you write the axes first, while reading, and the tldr last.
+first, but you write the axes first, while reading, and the summary last.
 
 ```
 _papers/<slug>/index.md       /papers/<slug>/            the minimal review — required
@@ -150,7 +160,7 @@ _papers/<slug>/thoughts.md    /papers/<slug>/thoughts/   extensions, open questi
 _papers/<slug>/notes.md       never published            private scratch, pasted chats
 ```
 
-`index.md` is almost all front matter — `tldr`, `confidence`, `review`, `takeaways` — and its
+`index.md` is almost all front matter — `summary`, `confidence`, `review`, `takeaways` — and its
 body is an optional short verdict paragraph. The layout renders the score row, then one block
 per axis (question, score, answer or table, + and − points), then links whichever part pages
 exist. `/rubric/` renders the rubric itself.
@@ -167,13 +177,20 @@ exist. `/rubric/` renders the rubric itself.
   axis scores, rating, confidence and tables — Best Paper, Hidden Gem, Jekyll & Hyde, … Only
   finished reviews earn them; `score.py` writes the keys to `stats.reviews[slug].badges` and
   the catalogue to `stats.paper_badges`. They read axes by key, so renaming an axis in
-  `rubric.yml` silences the badges that use it.
+  `rubric.yml` silences the badges that use it. They are public: `/badges/` (`badges.html`)
+  lists the catalogue and who earned each, and every stamp on a paper links there. Each has a
+  16×16 pixel icon at `assets/badges/<key>.svg`, generated by `python scripts/badge_icons.py`
+  from the character grids in that script — edit the grid, never the svg; `--check` flags a
+  stale svg or a badge with no grid. `paper-badges.html` falls back to the ✦ star when there's
+  no icon, so a new badge works before it has one.
 - **YAML reads a bare `yes`/`no` as a boolean**, so `holds: yes` arrives as `true`.
   `journal.cell` and the layout turn it back; quote the `values` lists in `rubric.yml`.
-- **Finished** means published, with a tldr, every axis scored and answered (a table needs at
+- **Finished** means published, with a summary, every axis scored and answered (a table needs at
   least one complete row), and at least one plus and one minus — `journal.missing_core`. Until
-  then the verdict is "under review"; `score.py` writes each paper's status and rating to
-  `stats.reviews` and the templates only read it.
+  then it is "under review"; `score.py` writes each paper's status (`reviewed` /
+  `under-review`) and rating to `stats.reviews`, and the templates only read it. Only reviewed
+  papers are listed — `stats.listed`, best rated first, drives `/papers/` and the tag pages, and
+  the tag counts only count them. An unfinished review's page still exists; nothing links it.
 - **Part pages** are `layout: paper-part` with `slug` and `part` set; `new_paper.py <slug> --part
   tutorial` scaffolds one. The part names, labels and order are in `_data/parts.yml`.
   `site.papers` contains them, so every listing filters `where_exp: "p", "p.part == nil"`.
@@ -277,8 +294,7 @@ and are theirs to retune — suggesting a change is fine, quietly rebalancing th
 Accepting a paper writes `taken: {slug, on, due}`, due `review_deadline.days` later. After
 that, every finished week costs `review_deadline.xp`, capped at `max_xp` per paper so one
 abandoned draft can't zero the scoreboard, and nothing accepted before `since` is ever charged.
-The debt clears when the review is finished. CI rescores daily, so a deadline
-passing moves the scoreboard without a push.
+The debt clears when the review is finished, and shows on the next `score.py` run.
 ## Tags, not folders
 
 Grouping is tags only; `_papers/` is deliberately flat. `_data/tags.yml` gives each tag a label
@@ -313,7 +329,8 @@ from before papers had folders and is left alone. Notebooks are excluded from th
 (`*.py` in `_config.yml`) and linked to GitHub instead.
 
 ```sh
-bundle exec jekyll serve      # local
+bundle exec jekyll serve                                            # public site
+bundle exec jekyll serve --config _config.yml,_config.scoreboard.yml   # with the scoreboard
 ```
 
 ## Don't

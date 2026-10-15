@@ -5,10 +5,6 @@ name: Build and deploy
 on:
   push:
     branches: [master]
-  # Rebuild daily: idle-week XP losses and overdue-review penalties both depend on today,
-  # so the scoreboard has to be able to move without a push.
-  schedule:
-    - cron: "15 0 * * *"   # 00:15 UTC, every day
   workflow_dispatch:
 
 permissions:
@@ -25,19 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Score the journal
-        # The site is scored as of the build date (UTC), not as of the last commit — streaks,
-        # idle-week penalties and overdue reviews accepted off the reading queue all depend on
-        # today. The committed _data/stats.yml is a snapshot for the diff history; this
-        # overwrites it in the build only.
-        run: |
-          pip install pyyaml
-          python scripts/score.py
 
       - uses: ruby/setup-ruby@v1
         with:

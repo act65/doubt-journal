@@ -1,6 +1,7 @@
 {% comment %}
   The badges one paper earned from its own scores — computed by scripts/score.py
-  (PAPER_BADGES), looked up here by key. Expects: include.slug.
+  (PAPER_BADGES), looked up here by key. A badge with a pixel icon at assets/badges/<key>.svg
+  shows it in place of the star. Expects: include.slug.
 {% endcomment %}
 {% assign earned = site.data.stats.reviews[include.slug].badges %}
-{% if earned and earned != empty %}<span class="awards">{% for key in earned %}{% assign b = site.data.stats.paper_badges | where: "key", key | first %}<a class="award" href="{{ '/stats/' | relative_url }}#paper-badges" title="{{ b.blurb }}">{{ b.name }}</a>{% endfor %}</span>{% endif %}
+{% if earned and earned != empty %}<span class="awards">{% for key in earned %}{% assign b = site.data.stats.paper_badges | where: "key", key | first %}{% assign icon_path = "/assets/badges/" | append: key | append: ".svg" %}{% assign icon = site.static_files | where: "path", icon_path | first %}{% capture face %}{% if icon %}<img class="award-icon" src="{{ icon_path | relative_url }}" alt="">{% endif %}{{ b.name }}{% endcapture %}<a class="award{% if icon %} has-icon{% endif %}" href="{{ '/badges/' | relative_url }}#{{ key }}" title="{{ b.blurb }}">{{ face }}</a>{% endfor %}</span>{% endif %}

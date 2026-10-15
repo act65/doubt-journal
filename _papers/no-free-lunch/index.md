@@ -11,7 +11,7 @@ permalink: /papers/no-free-lunch/
 read: 2020-06-15
 # read (1) | rebuilt (3) | extended (5) — guessed from how much of the draft was written.
 # Set it honestly before publishing.
-depth: read
+depth: reviewed
 # Carried over from the draft's front matter.
 # Your hand rating from before the rubric. Nothing reads it — the rating is now
 # computed from the axis scores. Kept so you can compare; delete it whenever.
@@ -19,8 +19,8 @@ rating_before_rubric: 8
 tags: [fundamental-ml, optimisation, classic]
 # What sent you here, and the paper compressed to a sentence. Both still to write.
 question:
-tldr:
-# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a tldr, every
+summary:
+# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a summary, every
 # axis scored and answered, and at least one plus and one minus — journal.is_finished.
 confidence:
 review:

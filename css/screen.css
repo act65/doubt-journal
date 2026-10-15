@@ -370,17 +370,23 @@ side {
   letter-spacing: 0.05em;
 }
 
-/* Violet, not green: the only strong colours on the site are the #a00 headings and the warm
-   depth ramp, and a green chip sat outside both. Violet is the one cool hue that reads as a
-   deliberate stamp next to red rather than as a traffic light. */
-.verdict-accepted { background: #eee9f6; color: #5a3d8c; }
-.verdict-rejected { background: #f7e8e8; color: #a00; }
+/* The rating is the verdict; there is no accepted/rejected chip. */
+.verdict-rating   { background: #f7e8e8; color: #a00; font-weight: bold; letter-spacing: 0; }
+.verdict-rating .of { opacity: 0.6; font-weight: normal; }
 .verdict-pending  { background: #f0f0f0; color: #777; }
 
-/* the same chips, used as filter buttons on /papers/ */
-button.verdict { border: none; cursor: pointer; font-family: inherit; }
-button.verdict .count { opacity: 0.6; }
-.verdict.active { outline: 2px solid #a00; }
+/* the sort toggle on /papers/ */
+button.sort {
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 1px 8px;
+  font-family: inherit;
+  font-size: 0.8em;
+  color: #777;
+  cursor: pointer;
+}
+button.sort.active { border-color: #a00; color: #a00; }
 
 .rating { font-size: 0.85em; color: #666; }
 
@@ -399,7 +405,7 @@ button.verdict .count { opacity: 0.6; }
    rather than four unrelated labels. Deliberately not green: green belongs to the accepted
    verdict, and a green 'rebuilt' chip next to it looked like a second verdict. Ochre sits in
    the same warm family as the #a00 headings without competing with the red rejected chip. */
-.depth-read     { background: #f7eee0; color: #9a7434; }
+.depth-reviewed { background: #f7eee0; color: #9a7434; }
 .depth-rebuilt  { background: #f3e1c0; color: #7c5511; }
 .depth-extended { background: #ecd3a3; color: #5c3c06; }
 .depth.active   { outline: 2px solid #a00; }
@@ -467,7 +473,7 @@ button.clear {
 .paper-tags { margin-bottom: 0.8em; }
 .paper-question { color: #555; }
 
-blockquote.paper-tldr {
+blockquote.rubric-ideal {
   border-left: 3px solid #a00;
   padding-left: 1em;
   margin: 1em 0;
@@ -475,11 +481,29 @@ blockquote.paper-tldr {
   color: #444;
 }
 
-/* the scores: one row of small labelled numbers, read before the prose */
+/* the summary is the reviewer's own summary, not a quote from the paper — so it is labelled, and
+   not styled as a blockquote (rubric.html's blockquote.rubric-ideal is a real quote and keeps that) */
+div.paper-summary {
+  margin: 1em 0;
+  padding: 0.6em 0.9em;
+  background: #faf6f0;
+  color: #333;
+}
+.paper-summary-label {
+  font-size: 0.7em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #a00;
+  font-weight: bold;
+  margin-right: 0.4em;
+}
+
+/* the scores: one row of small labelled numbers, read before the prose. Equal-width cells so
+   the numbers line up whatever the label lengths. */
 dl.paper-scores {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4em 1.4em;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8em, 1fr));
+  gap: 0.4em 1em;
   margin: 1em 0;
   padding: 0.5em 0;
   border-top: 1px solid #eee;
@@ -499,7 +523,6 @@ ul.paper-takeaways li { margin: 0.3em 0; }
 
 dl.paper-scores dt a { color: inherit; text-decoration: none; }
 dl.paper-scores .score-total dd { font-weight: bold; color: #a00; }
-dl.paper-scores .score-confidence { margin-left: auto; }
 
 /* one block per rubric axis */
 section.axis { margin: 1.2em 0; }
@@ -507,10 +530,9 @@ section.axis h3 { margin-bottom: 0.1em; }
 .axis-score { font-size: 0.75em; color: #888; font-weight: normal; margin-left: 0.3em; }
 .axis-ask { color: #888; font-size: 0.85em; font-style: italic; margin: 0 0 0.5em; }
 
-/* the claims and assumptions tables; scroll inside themselves on a phone, never the page */
+/* the claims and assumptions tables: full width, every row shown, cells wrap */
 table.axis-table {
-  display: block;
-  overflow-x: auto;
+  width: 100%;
   border-collapse: collapse;
   font-size: 0.9em;
   margin: 0.5em 0;
@@ -520,6 +542,7 @@ table.axis-table th, table.axis-table td {
   padding: 0.3em 0.8em 0.3em 0;
   text-align: left;
   vertical-align: top;
+  overflow-wrap: break-word;
 }
 table.axis-table th { font-size: 0.8em; color: #888; font-weight: normal; text-transform: uppercase; letter-spacing: 0.04em; }
 td.cell-yes    { color: #5a3d8c; }
@@ -624,6 +647,20 @@ ul.backlog { list-style: none; padding: 0; }
 .badge-blurb { display: block; font-size: 0.82em; color: #777; }
 .badge-progress { display: block; font-size: 0.78em; color: #aaa; margin-top: 0.2em; }
 
+/* /badges/: the icon at 2x on the left, two columns of cards; a locked badge goes grey */
+ul.paper-badge-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(17em, 1fr)); gap: 0.5em; }
+.paper-badge-list .badge { width: auto; margin: 0; padding-left: 3.4em; position: relative; }
+.paper-badge-list .badge:target { outline: 2px solid #a00; }
+.badge-icon {
+  position: absolute;
+  left: 0.6em;
+  top: 0.6em;
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+}
+.badge.locked .badge-icon { filter: grayscale(1); }
+
 /* a paper's own badges: small outlined stamps, so they never read as the verdict chip */
 .paper-awards { margin-bottom: 0.5em; }
 .awards { display: inline; }
@@ -640,5 +677,14 @@ ul.backlog { list-style: none; padding: 0; }
   white-space: nowrap;
 }
 .award::before { content: "\2726\00a0"; }
+.award.has-icon::before { content: none; }
+/* pixel icons are 16x16 grids (assets/badges/<key>.svg): keep them crisp at whole multiples */
+.award-icon {
+  width: 16px;
+  height: 16px;
+  vertical-align: -4px;
+  margin-right: 4px;
+  image-rendering: pixelated;
+}
 .award:hover { background: #fffafa; }
 .paper-card .awards { display: block; margin: 0.15em 0; }

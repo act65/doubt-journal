@@ -9,13 +9,13 @@ ref: https://arxiv.org/abs/2605.13287
 permalink: /papers/delightful-exploration/
 # Approximate: first time it came up in your Claude transcripts.
 read: 2026-07-02
-depth: read
+depth: reviewed
 tags: [rl, uncertainty]
-tldr: >
+summary: >
   Most exploration algorithms search broadly until uncertainty is resolved. When the action
   space is too large to resolve within budget, practitioners fall back on $\varepsilon$-greedy;
   this proposes an alternative that bounds disruption differently.
-# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a tldr, every
+# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a summary, every
 # axis scored and answered, and at least one plus and one minus — journal.is_finished.
 confidence:
 review:

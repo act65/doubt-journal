@@ -8,12 +8,14 @@ scoreboard is computed from the reviews themselves, so the only way to move a nu
 actually read something.
 
 - **Papers** — <https://act65.github.io/doubt-journal/papers/>
-- **Scoreboard** — <https://act65.github.io/doubt-journal/stats/>
+- **Badges** — <https://act65.github.io/doubt-journal/badges/>, what a single review can earn
+
+The scoreboard itself is private: it is only built locally (see *Building the site*).
 
 ## Layout
 
 ```
-_papers/<slug>/index.md     the minimal review — tldr, then the rubric axes with their reasons
+_papers/<slug>/index.md     the minimal review — summary, then the rubric axes with their reasons
 _papers/<slug>/tutorial.md  optional longer pages: tutorial, discussion, thoughts (+ private notes.md)
 _papers/<slug>/*.py         marimo notebooks that rebuild the idea in JAX
 _data/rubric.yml            the rubric — the axes every review is scored on; rendered at /rubric/
@@ -68,7 +70,7 @@ paper for good; a tombstone goes in `_data/dropped.yml` so the next import can't
 
 Accepting one starts a clock. The review is due in two weeks, and after that every finished
 week costs XP until the review is finished — capped per paper, so one abandoned draft
-can't zero the scoreboard. CI rescores daily, so the deadline bites without a push.
+can't zero the scoreboard. The penalty lands the next time you run `score.py`.
 
 ### Building the queue
 
@@ -112,7 +114,7 @@ survive.
 ```sh
 python scripts/new_paper.py bfn --title "Bayesian Flow Networks" \
     --ref https://arxiv.org/abs/2308.07037 --authors "Graves et al." --year 2023 \
-    --depth read --tags probabilistic-methods,generative-models
+    --depth reviewed --tags probabilistic-methods,generative-models
 
 # or pull the metadata out of the queue:
 python scripts/new_paper.py neural-collapse --from-queue "neural collapse"
@@ -148,7 +150,7 @@ A paper's page is the minimal review, read top to bottom; the longer writing is 
 
 | where | | |
 |---|---|---|
-| `tldr` | required | The whole paper in a sentence or two. |
+| `summary` | required | The whole paper in a sentence or two. |
 | `review.why` | required | The problem — real, hard, worth solving? |
 | `review.idea` | required | The solution — principled and well motivated, or ad hoc? |
 | `review.contribution` | required | The delta — what it adds that wasn't known or possible before. |
@@ -164,7 +166,7 @@ A paper's page is the minimal review, read top to bottom; the longer writing is 
 
 Each axis is scored 1–4 and carries its reasons — an answer (or the table), plus `plus` and
 `minus` points. The axes and their questions live in `_data/rubric.yml`; edit them there. Write
-it in the other order: the axes while reading, the tldr and takeaways last. A review isn't
+it in the other order: the axes while reading, the summary and takeaways last. A review isn't
 finished — and gets no verdict — until every axis is scored and answered and there is at least
 one plus and one minus. `scripts/score.py` lists what each one still lacks.
 
@@ -174,7 +176,7 @@ one plus and one minus. `scripts/score.py` lists what each one still lacks.
 
 | depth | XP | means |
 |---|---|---|
-| `read` | 1 | read it properly, could summarise the argument |
+| `reviewed` | 1 | read it properly and reviewed it, could summarise the argument |
 | `rebuilt` | 3 | reimplemented the core idea; there is a notebook |
 | `extended` | 5 | went past the paper — a new experiment, a case it gets wrong |
 
@@ -182,10 +184,11 @@ One read is the unit. There is no credit for skimming — if you only got as far
 and the figures, it doesn't go in the journal.
 
 The rating is never written by hand. It is the mean of the axis scores rescaled to 0–10, and a
-1 on any axis caps it at 4, so one fatal flaw can't be outvoted by the rest. At or above 5 the
-paper is **accepted**, below it **rejected**, and a review that isn't finished is **under
-review** whatever its scores. Unfinished is not zero — a paper you haven't judged yet is
-different from one you thought was worthless.
+1 on any axis caps it at 4, so one fatal flaw can't be outvoted by the rest. Nothing is
+accepted or rejected — the rating is the verdict. A review that isn't finished is **under
+review** whatever its scores, and isn't listed on `/papers/` or the tag pages until it is.
+Unfinished is not zero — a paper you haven't judged yet is different from one you thought was
+worthless.
 
 Ranks run Desk Clerk → Reviewer 2 → Reviewer → Area Chair → Senior AC → Program Chair →
 Editor-in-Chief. Badges, streaks, the idle-week penalty and the two-week review deadline are
@@ -206,12 +209,21 @@ each paper page but not served by the site — GitHub renders them fine.
 
 ```sh
 bundle install
-bundle exec jekyll serve
+bundle exec jekyll serve                                            # public site
+bundle exec jekyll serve --config _config.yml,_config.scoreboard.yml   # plus the scoreboard
 ```
 
-Pushes to `master` build and deploy through `.github/workflows/pages.yml`. The workflow reruns
-`score.py` before building, so the site is always scored as of the build date (UTC), and a
-daily cron rebuild makes idle-week XP losses and missed review deadlines land without a push.
+The scoreboard — `/stats/`, the nav link, the `+XP` on each paper — only exists when
+`_config.scoreboard.yml` is layered on. The public build never uses it.
+
+Pushes to `master` build and deploy through `.github/workflows/pages.yml`. The workflow does not
+run `score.py`: it builds from the committed `_data/stats.yml`. A pre-commit hook in `.githooks/`
+rescores and stages it whenever a commit touches a review, `_data/` or the scorer. Enable it
+once per clone:
+
+```sh
+git config core.hooksPath .githooks
+```
 It cannot use the stock GitHub Pages build because the site uses `jekyll-scholar` and a
 `_plugins/` file, both of which that build ignores.
 

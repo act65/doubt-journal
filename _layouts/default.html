@@ -36,7 +36,8 @@
   <div class="title">
     <a href="{{ '/' | relative_url }}">Home</a>
     <a class="extra" href="{{ '/papers/' | relative_url }}">Papers</a>
-    <a class="extra" href="{{ '/stats/' | relative_url }}">Scoreboard</a>
+    <a class="extra" href="{{ '/badges/' | relative_url }}">Badges</a>
+    {% if site.scoreboard %}<a class="extra" href="{{ '/stats/' | relative_url }}">Scoreboard</a>{% endif %}
   </div>
 
   {{ content }}

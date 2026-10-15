@@ -13,10 +13,10 @@ depth: extended
 # computed from the axis scores. Kept so you can compare; delete it whenever.
 rating_before_rubric: 7
 tags: [generative-models, flow-matching, probabilistic-methods]
-tldr: >
+summary: >
   Generative modelling usually transports one source distribution to one target. Here the
   samples themselves are distributions, so the flow is matched over a whole family of them.
-# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a tldr, every
+# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a summary, every
 # axis scored and answered, and at least one plus and one minus — journal.is_finished.
 confidence:
 review:

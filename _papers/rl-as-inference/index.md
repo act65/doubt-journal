@@ -9,14 +9,14 @@ ref: https://arxiv.org/abs/2311.13294
 permalink: /papers/rl-as-inference/
 # Migrated from _drafts/2024-01-10-rl-as-inference.md; `read` is that draft's filename date.
 read: 2024-01-10
-depth: read
+depth: reviewed
 # Your hand rating from before the rubric. Nothing reads it — the rating is now
 # computed from the axis scores. Kept so you can compare; delete it whenever.
 rating_before_rubric: 6
 tags: [rl, probabilistic-methods]
 question:
-tldr:
-# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a tldr, every
+summary:
+# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a summary, every
 # axis scored and answered, and at least one plus and one minus — journal.is_finished.
 confidence:
 review:

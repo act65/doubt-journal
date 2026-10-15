@@ -9,7 +9,7 @@ JavaScript, no build-time rendering, nothing for Jekyll to do but serve it.
     python scripts/pile.py --check    # fail if it is stale (score.py --check does this too)
 
 The point of the picture is scale, so the two things it encodes are the two things that scale:
-one sheet per paper, and a sheet's *thickness* is the XP its depth earns. A `read` is a single
+one sheet per paper, and a sheet's *thickness* is the XP its depth earns. A `reviewed` is a single
 leaf, a `rebuilt` is a three-leaf wad, an `extended` is five. The heap gets taller by reading
 and much taller by rebuilding, which is the same argument ``_data/gamify.yml`` makes in numbers.
 
@@ -227,7 +227,7 @@ def _sheet(
 def render(papers: list[dict], gamify: dict) -> str:
     """Return the whole svg. `papers` is score.py's list; drafts are already filtered out."""
     depth_cfg = gamify.get("depth") or {}
-    threshold = gamify.get("accept_threshold", 5)
+    threshold = gamify.get("low_rating", 5)
 
     def verdict_of(paper) -> str:
         # The same rule as the scoreboard: no verdict until the review is finished, and the

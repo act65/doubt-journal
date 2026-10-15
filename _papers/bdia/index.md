@@ -14,13 +14,13 @@ depth: rebuilt
 rating_before_rubric: 2
 tags: [generative-models, numerical-methods, disputed]
 question: Can a bi-directional coupled integrator make diffusion inversion exact without doubling the NFEs?
-tldr: >
+summary: >
   Coupling variables lets you construct reversible integration updates. BDIA extends that idea to
   a bi-directional coupled integrator. The idea may have potential, but this paper does not
   demonstrate it.
 scholar:
   bibliography: "bdia.bib"
-# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a tldr, every
+# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a summary, every
 # axis scored and answered, and at least one plus and one minus — journal.is_finished.
 confidence:
 review:

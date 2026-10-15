@@ -9,13 +9,13 @@ ref: https://arxiv.org/abs/2209.03302
 permalink: /papers/quantifying-aleatoric-epistemic/
 # Approximate: first time it came up in your Claude transcripts.
 read: 2026-07-02
-depth: read
+depth: reviewed
 tags: [uncertainty, probabilistic-methods]
-tldr: >
+summary: >
   Conditional entropy and mutual information have become the default split of aleatoric and
   epistemic uncertainty. This asks whether those measures actually have the properties that
   decomposition requires — and argues they do not.
-# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a tldr, every
+# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a summary, every
 # axis scored and answered, and at least one plus and one minus — journal.is_finished.
 confidence:
 review:

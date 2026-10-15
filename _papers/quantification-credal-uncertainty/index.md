@@ -10,12 +10,12 @@ permalink: /papers/quantification-credal-uncertainty/
 # Approximate: first time it came up in your Claude transcripts.
 read: 2026-07-21
 # You said Claude read this one, not you. Set the depth or delete the folder.
-depth: read
+depth: reviewed
 tags: [uncertainty, probabilistic-methods]
-tldr: >
+summary: >
   Credal sets — closed convex sets of probability measures — represent aleatoric and epistemic
   uncertainty naturally. This proposes quantifying both via distances within the credal set.
-# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a tldr, every
+# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a summary, every
 # axis scored and answered, and at least one plus and one minus — journal.is_finished.
 confidence:
 review:

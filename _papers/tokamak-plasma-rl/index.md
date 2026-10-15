@@ -10,14 +10,14 @@ permalink: /papers/tokamak-plasma-rl/
 # Migrated from _drafts/2022-10-10-tokomak-plasma-rl.md (slug spelling fixed to 'tokamak');
 # `read` is that draft's filename date, a batch placeholder — check it before publishing.
 read: 2022-10-10
-depth: read
+depth: reviewed
 # Your hand rating from before the rubric. Nothing reads it — the rating is now
 # computed from the axis scores. Kept so you can compare; delete it whenever.
 rating_before_rubric: 8
 tags: [rl]
 question:
-tldr:
-# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a tldr, every
+summary:
+# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a summary, every
 # axis scored and answered, and at least one plus and one minus — journal.is_finished.
 confidence:
 review:

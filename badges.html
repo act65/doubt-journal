@@ -1,0 +1,40 @@
+---
+layout: default
+title: Badges
+permalink: /badges/
+---
+
+{% comment %}
+  The paper badges: the catalogue and who earned each, from stats.paper_badges (scripts/score.py,
+  PAPER_BADGES). Icons are assets/badges/<key>.svg, drawn by scripts/badge_icons.py. The journal's
+  own badges — the ones for the reviewer — stay on the private scoreboard.
+{% endcomment %}
+
+<div id="paper">
+
+  <h1>Badges</h1>
+  <p class="note">
+    Earned by a single paper, from its own scores on the <a href="{{ '/rubric/' | relative_url }}">rubric</a>.
+    Only finished reviews earn them.
+  </p>
+
+  <ul class="badges paper-badge-list">
+    {% for b in site.data.stats.paper_badges %}
+      {% assign icon_path = "/assets/badges/" | append: b.key | append: ".svg" %}
+      {% assign icon = site.static_files | where: "path", icon_path | first %}
+      <li class="badge {% if b.papers.size > 0 %}earned{% else %}locked{% endif %}" id="{{ b.key }}">
+        {% if icon %}<img class="badge-icon" src="{{ icon_path | relative_url }}" alt="">{% endif %}
+        <span class="badge-name">{{ b.name }}</span>
+        <span class="badge-blurb">{{ b.blurb }}</span>
+        {% if b.papers.size > 0 %}
+          <span class="badge-progress">
+            {% for slug in b.papers %}{% assign paper = site.papers | where: "slug", slug | where_exp: "d", "d.part == nil" | first %}<a href="{{ paper.url | relative_url }}">{{ paper.title | default: slug }}</a>{% unless forloop.last %} · {% endunless %}{% endfor %}
+          </span>
+        {% else %}
+          <span class="badge-progress">nobody yet</span>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+
+</div>

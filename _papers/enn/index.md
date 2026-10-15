@@ -11,11 +11,11 @@ read: 2026-07-27
 depth: rebuilt
 tags: [probabilistic-methods, uncertainty, deep-learning, hidden-equivalence]
 question: Why a *joint* over outputs — and how is it learned from single labels?
-tldr: >
+summary: >
   Sample one hypothesis $z$, then predict conditionally independently given it — so the
   correlation between predictions at different inputs *is* the epistemic uncertainty, and it gets
   learned from single labels because the shared $z$ is what the data constrains.
-# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a tldr, every
+# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a summary, every
 # axis scored and answered, and at least one plus and one minus — journal.is_finished.
 confidence:
 review:

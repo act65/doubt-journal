@@ -10,14 +10,14 @@ permalink: /papers/eye/
 # Migrated from _drafts/2025-40-10-eye.md (filename month/day were transposed; an identical
 # copy at 2025-04-10-eye.md was dropped). `read` is the corrected filename date.
 read: 2025-04-10
-depth: read
+depth: reviewed
 # Your hand rating from before the rubric. Nothing reads it — the rating is now
 # computed from the axis scores. Kept so you can compare; delete it whenever.
 rating_before_rubric: 2
 tags: [neuroscience, rl]
 question:
-tldr:
-# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a tldr, every
+summary:
+# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a summary, every
 # axis scored and answered, and at least one plus and one minus — journal.is_finished.
 confidence:
 review:

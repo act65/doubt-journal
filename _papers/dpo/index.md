@@ -9,11 +9,11 @@ ref: https://arxiv.org/abs/2305.18290
 permalink: /papers/dpo/
 # Migrated from _drafts/2024-02-10-dpo.md; `read` is that draft's filename date.
 read: 2024-02-10
-depth: read
+depth: reviewed
 tags: [rl, deep-learning, hidden-equivalence]
 question:
-tldr:
-# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a tldr, every
+summary:
+# The core review — see TEMPLATE.md and _data/rubric.yml. Finished once it has a summary, every
 # axis scored and answered, and at least one plus and one minus — journal.is_finished.
 confidence:
 review:

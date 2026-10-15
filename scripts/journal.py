@@ -165,14 +165,14 @@ def compute_rating(fm: dict, rubric: dict | None = None) -> float | None:
 def missing_core(fm: dict, rubric: dict | None = None) -> list[str]:
     """What the minimal review still lacks before it counts as finished.
 
-    The core is the verdict and the reasons for it: a tldr; every axis scored, and answered —
+    The core is the verdict and the reasons for it: a summary; every axis scored, and answered —
     in prose, or for an axis with a table, at least one complete row; and at least one plus and
     one minus somewhere. A score on its own isn't a review — it's a number nobody can check.
     """
     if rubric is None:
         rubric = load_rubric()
     axes = rubric.get("axes") or []
-    missing = [] if answered(fm.get("tldr")) else ["tldr"]
+    missing = [] if answered(fm.get("summary")) else ["summary"]
     for axis in axes:
         key = axis["key"]
         if axis_score(fm, axis, rubric) is None:
