@@ -14,7 +14,8 @@
 #
 # Every axis is about the paper, not the reader: what it gave *you* goes in `takeaways`.
 #
-# A paper's front matter has `review: {<axis key>: {score, answer, plus, minus}}`. An axis with
+# A paper's front matter has `review: {<axis key>: {score, answer, plus, minus}}`; `answer` is
+# prose, or a list when there is more than one (a paper asking two questions). An axis with
 # a `table` swaps `answer` for rows: `review.rigour.claims: [{claim, evidence, holds}, ...]`.
 # Renaming a key orphans what's already written under the old one, so rename those too.
 

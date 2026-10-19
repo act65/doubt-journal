@@ -399,7 +399,7 @@ PAPER_BADGES = [
     {"key": "solution-seeking", "name": "Solution in Search of a Problem",
      "blurb": "3 or more for the idea, 2 or less for why."},
     {"key": "overclaimed", "name": "Overclaimed",
-     "blurb": "Fewer than half of its checked claims fully hold."},
+     "blurb": "Fewer than half of its checked claims hold — a partly counts as half."},
     {"key": "taken-on-faith", "name": "Taken on Faith",
      "blurb": "More than half of its claims are still unverified."},
     {"key": "fine-print", "name": "Terms and Conditions Apply",
@@ -444,7 +444,9 @@ def paper_badges(paper, rubric, low, status) -> list[dict]:
         "beautiful-conjecture": axis("idea") == hi and (axis("rigour") or hi) <= 2,
         "right-question": axis("why") == hi and (axis("idea") or hi) <= 2,
         "solution-seeking": (axis("idea") or 0) >= 3 and (axis("why") or hi) <= 2,
-        "overclaimed": checked and sum(h == "yes" for h in checked) < len(checked) / 2,
+        # `partly` is half a hold, so one partly-held claim on its own isn't an overclaim.
+        "overclaimed": checked and sum({"yes": 1, "partly": 0.5}.get(h, 0) for h in checked)
+                       < len(checked) / 2,
         "taken-on-faith": holds and (len(holds) - len(checked)) > len(holds) / 2,
         "fine-print": stated and stated.count("no") > stated.count("yes"),
         "fatal-flaw": lo in values,

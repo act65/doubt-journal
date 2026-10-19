@@ -98,7 +98,11 @@ layout: default
         <section class="axis" id="axis-{{ axis.key }}">
           <h3>{{ axis.label }}{% if entry.score != nil %} <span class="axis-score">{{ entry.score }}/{{ r.scale.max }}</span>{% endif %}</h3>
           <p class="axis-ask">{{ axis.ask }}</p>
-          {% if entry.answer %}{{ entry.answer | markdownify }}{% endif %}
+          {% comment %} `answer` is prose, or a list when the paper asks more than one thing. {% endcomment %}
+          {% if entry.answer.first %}
+            {% assign answers = entry.answer | compact %}
+            <ul class="axis-answers">{% for item in answers %}{% assign text = item | strip %}{% if text != "" %}<li>{{ item | markdownify | remove: '<p>' | remove: '</p>' }}</li>{% endif %}{% endfor %}</ul>
+          {% elsif entry.answer %}{{ entry.answer | markdownify }}{% endif %}
           {{ table }}
           {% if plus.size > 0 or minus.size > 0 %}
             <ul class="axis-pm">

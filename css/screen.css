@@ -549,6 +549,9 @@ td.cell-yes    { color: #5a3d8c; }
 td.cell-partly { color: #9a7434; }
 td.cell-no     { color: #a00; }
 
+ul.axis-answers { padding-left: 1.2em; }
+ul.axis-answers li { margin: 0.25em 0; }
+
 /* plus and minus share one list, marked rather than split into columns */
 ul.axis-pm { list-style: none; padding-left: 0; }
 ul.axis-pm li { margin: 0.25em 0; padding-left: 1.2em; text-indent: -1.2em; }
